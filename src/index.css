@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #FFFFFF;
+  --color-foreground: #1A1A1A;
+  --color-primary: #0057FF;
+  --color-primary-dark: #0046CC;
+  --color-primary-light: #3379FF;
+  --color-muted: #F5F5F7;
+  --color-border: #E5E5E7;
+  
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground antialiased m-0 p-0;
+    font-family: var(--font-sans);
+  }
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.glass-card {
+  @apply bg-white border border-white/20 shadow-sm backdrop-blur-md;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-border rounded-full;
+}
