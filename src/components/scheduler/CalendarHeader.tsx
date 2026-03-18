@@ -20,21 +20,24 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({ currentDate, setCurrent
       <div className="flex items-center gap-2 rounded-2xl bg-white border border-border p-1.5 shadow-sm">
         <button
           onClick={() => setCurrentDate(subMonths(currentDate, 1))}
+          aria-label="이전 달로 이동"
           className="p-2 transition-all hover:bg-muted rounded-xl"
         >
-          <ChevronLeft className="h-5 w-5" />
+          <ChevronLeft className="h-5 w-5" aria-hidden="true" />
         </button>
         <button
           onClick={() => setCurrentDate(new Date())}
+          aria-label="오늘 날짜로 이동"
           className="px-4 text-xs font-bold text-foreground/50 transition-colors hover:text-primary"
         >
           오늘
         </button>
         <button
           onClick={() => setCurrentDate(addMonths(currentDate, 1))}
+          aria-label="다음 달로 이동"
           className="p-2 transition-all hover:bg-muted rounded-xl"
         >
-          <ChevronRight className="h-5 w-5" />
+          <ChevronRight className="h-5 w-5" aria-hidden="true" />
         </button>
       </div>
     </div>

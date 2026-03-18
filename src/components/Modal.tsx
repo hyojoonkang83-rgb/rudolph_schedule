@@ -31,11 +31,12 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
           <div className="mb-4 flex items-center justify-between">
             <div className="text-xl font-semibold text-foreground">{title}</div>
             <button
-              onClick={onClose}
-              className="rounded-full p-1 transition-colors hover:bg-muted"
-            >
-              <X className="h-5 w-5 text-foreground/50" />
-            </button>
+            onClick={onClose}
+            aria-label=" 닫기"
+            className="rounded-full p-2 text-foreground/20 transition-colors hover:bg-muted hover:text-foreground active:scale-95"
+          >
+            <X className="h-5 w-5" aria-hidden="true" />
+          </button>
           </div>
           {children}
         </motion.div>

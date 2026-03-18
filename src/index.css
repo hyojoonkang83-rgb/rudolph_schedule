@@ -16,6 +16,16 @@
   body {
     @apply bg-background text-foreground antialiased m-0 p-0;
     font-family: var(--font-sans);
+    letter-spacing: -0.01em;
+  }
+
+  /* 글로벌 포커스 링 스타일 개선 (접근성) */
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2;
+  }
+
+  button, a {
+    @apply cursor-pointer transition-colors duration-200;
   }
 }
 
@@ -25,11 +35,17 @@
 }
 
 .glass-card {
-  @apply bg-white border border-white/20 shadow-sm backdrop-blur-md;
+  @apply bg-white/80 border border-white/20 shadow-sm backdrop-blur-md;
+}
+
+/* 스무스 스크롤 애니메이션 */
+html {
+  scroll-behavior: smooth;
 }
 
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {

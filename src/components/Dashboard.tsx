@@ -41,9 +41,10 @@ const Dashboard: React.FC<DashboardProps> = ({
           </div>
           <button
             onClick={() => setIsModalOpen(true)}
+            aria-label="새 프로젝트 등록 시작"
             className="flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-white transition-all hover:bg-primary-dark hover:shadow-lg active:scale-95"
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="h-4 w-4" aria-hidden="true" />
             새 프로젝트 등록
           </button>
         </header>
@@ -75,7 +76,14 @@ const Dashboard: React.FC<DashboardProps> = ({
                   whileHover={{ y: -4 }}
                   className="group relative cursor-pointer overflow-hidden rounded-2xl bg-white p-6 border border-border transition-all hover:shadow-xl"
                 >
-                  <div className="flex flex-col h-full" onClick={() => onSelectProject(project)}>
+                  <div 
+                    className="flex flex-col h-full" 
+                    onClick={() => onSelectProject(project)}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`${project.clientName}의 ${project.projectName} 프로젝트 관리하기`}
+                    onKeyDown={(e) => e.key === 'Enter' && onSelectProject(project)}
+                  >
                     <div className="mb-4 flex items-center justify-between">
                       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
                         <LayoutGrid className="h-5 w-5" />
@@ -97,9 +105,10 @@ const Dashboard: React.FC<DashboardProps> = ({
                       e.stopPropagation();
                       setConfirmDelete(project);
                     }}
+                    aria-label={`${project.projectName} 프로젝트 삭제`}
                     className="absolute top-4 right-4 rounded-full p-2 text-foreground/10 transition-all hover:bg-red-50 hover:text-red-500 opacity-0 group-hover:opacity-100"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="h-4 w-4" aria-hidden="true" />
                   </button>
                 </motion.div>
               ))}

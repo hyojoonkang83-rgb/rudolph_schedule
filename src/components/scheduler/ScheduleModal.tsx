@@ -66,6 +66,8 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
           <div className="flex items-center gap-1 p-1 bg-muted/30 rounded-xl">
             <button 
               type="button"
+              role="tab"
+              aria-selected={modalTab === 'event'}
               onClick={() => setModalTab('event')}
               className={`px-4 py-2 text-sm font-bold transition-all rounded-xl ${modalTab === 'event' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-foreground/40 hover:bg-muted'}`}
             >
@@ -73,6 +75,8 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
             </button>
             <button 
               type="button"
+              role="tab"
+              aria-selected={modalTab === 'task'}
               onClick={() => setModalTab('task')}
               className={`px-4 py-2 text-sm font-bold transition-all rounded-xl ${modalTab === 'task' ? 'bg-purple-600 text-white shadow-lg shadow-purple-200' : 'text-foreground/40 hover:bg-muted'}`}
             >

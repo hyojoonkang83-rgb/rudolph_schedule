@@ -83,9 +83,10 @@ const ProjectScheduler: React.FC<ProjectSchedulerProps> = ({ project, onBack, on
         <div className="flex items-center gap-4">
           <button
             onClick={onBack}
+            aria-label="대시보드로 돌아가기"
             className="group flex h-10 w-10 items-center justify-center rounded-full transition-all hover:bg-muted active:scale-90"
           >
-            <ArrowLeft className="h-5 w-5 transition-transform group-hover:-translate-x-0.5" />
+            <ArrowLeft className="h-5 w-5 transition-transform group-hover:-translate-x-0.5" aria-hidden="true" />
           </button>
           <div className="flex flex-col">
             <span className="text-[10px] font-bold uppercase tracking-widest text-primary/60">{project.clientName}</span>
@@ -96,13 +97,14 @@ const ProjectScheduler: React.FC<ProjectSchedulerProps> = ({ project, onBack, on
         <div className="flex items-center gap-2">
           <button
             onClick={handleCopyLink}
+            aria-label={copied ? "링크 복사됨" : "현재 공유 링크 복사하기"}
             className="flex items-center gap-2 rounded-xl border border-border bg-white px-4 py-2.5 text-xs font-bold shadow-sm hover:bg-muted active:scale-95"
           >
             <AnimatePresence mode="wait">
               {copied ? (
-                <Check className="h-3.5 w-3.5 text-green-500" />
+                <Check className="h-3.5 w-3.5 text-green-500" aria-hidden="true" />
               ) : (
-                <LinkIcon className="h-3.5 w-3.5 text-foreground/40" />
+                <LinkIcon className="h-3.5 w-3.5 text-foreground/40" aria-hidden="true" />
               )}
             </AnimatePresence>
             {copied ? <span className="text-green-600">링크 복사됨</span> : '링크 공유'}

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { getProjects, saveProject, deleteProject } from './utils/storage';
 import Dashboard from './components/Dashboard';
 import ProjectScheduler from './components/scheduler/ProjectScheduler';
+import ErrorBoundary from './components/ErrorBoundary';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Project } from './types/project';
 
@@ -29,8 +30,9 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="App font-sans selection:bg-primary/20">
-      <AnimatePresence mode="wait">
+    <ErrorBoundary>
+      <div className="App font-sans selection:bg-primary/20">
+        <AnimatePresence mode="wait">
         {!selectedProject ? (
           <motion.div
             key="dashboard"
@@ -63,6 +65,7 @@ const App: React.FC = () => {
         )}
       </AnimatePresence>
     </div>
+    </ErrorBoundary>
   );
 }
 
