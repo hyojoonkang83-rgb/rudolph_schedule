@@ -1,7 +1,26 @@
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertCircle, X } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 
-const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message, confirmText = "삭제", type = "danger" }) => {
+interface ConfirmModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  title: string;
+  message: string;
+  confirmText?: string;
+  type?: 'danger' | 'primary';
+}
+
+const ConfirmModal: React.FC<ConfirmModalProps> = ({ 
+  isOpen, 
+  onClose, 
+  onConfirm, 
+  title, 
+  message, 
+  confirmText = "삭제", 
+  type = "danger" 
+}) => {
   if (!isOpen) return null;
 
   return (

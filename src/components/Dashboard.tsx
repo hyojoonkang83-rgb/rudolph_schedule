@@ -1,15 +1,28 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Plus, ChevronRight, LayoutGrid, Trash2, FolderOpen } from 'lucide-react';
 import Modal from './Modal';
 import ConfirmModal from './ConfirmModal';
+import { Project } from '../types/project';
 
-const Dashboard = ({ projects, onAddProject, onSelectProject, onDeleteProject }) => {
+interface DashboardProps {
+  projects: Project[];
+  onAddProject: (project: { clientName: string; projectName: string }) => void;
+  onSelectProject: (project: Project) => void;
+  onDeleteProject: (id: string) => void;
+}
+
+const Dashboard: React.FC<DashboardProps> = ({ 
+  projects, 
+  onAddProject, 
+  onSelectProject, 
+  onDeleteProject 
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState<Project | null>(null);
   const [newProject, setNewProject] = useState({ clientName: '', projectName: '' });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (newProject.clientName && newProject.projectName) {
       onAddProject(newProject);
@@ -148,7 +161,7 @@ const Dashboard = ({ projects, onAddProject, onSelectProject, onDeleteProject })
       <ConfirmModal
         isOpen={!!confirmDelete}
         onClose={() => setConfirmDelete(null)}
-        onConfirm={() => onDeleteProject(confirmDelete.id)}
+        onConfirm={() => confirmDelete && onDeleteProject(confirmDelete.id)}
         title="프로젝트 삭제"
         message={`[${confirmDelete?.clientName}] ${confirmDelete?.projectName} 프로젝트를 삭제하시겠습니까? 모든 일정 정보가 영구적으로 삭제됩니다.`}
         confirmText="완전 삭제"

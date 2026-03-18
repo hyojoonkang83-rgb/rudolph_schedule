@@ -1,29 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { getProjects, saveProject, deleteProject } from './utils/storage';
 import Dashboard from './components/Dashboard';
-import ProjectScheduler from './components/ProjectScheduler';
+import ProjectScheduler from './components/scheduler/ProjectScheduler';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Project } from './types/project';
 
-function App() {
-  const [projects, setProjects] = useState([]);
-  const [selectedProject, setSelectedProject] = useState(null);
+const App: React.FC = () => {
+  const [projects, setProjects] = useState<Project[]>(() => getProjects());
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
-  useEffect(() => {
-    setProjects(getProjects());
-  }, []);
-
-  const handleAddProject = (newProject) => {
+  const handleAddProject = (newProject: { clientName: string; projectName: string }) => {
     const updatedProjects = saveProject(newProject);
     setProjects(updatedProjects);
   };
 
-  const handleUpdateProject = (updatedProject) => {
+  const handleUpdateProject = (updatedProject: Project) => {
     const updatedProjects = saveProject(updatedProject);
     setProjects(updatedProjects);
     setSelectedProject(updatedProject);
   };
 
-  const handleDeleteProject = (id) => {
+  const handleDeleteProject = (id: string) => {
     const updatedProjects = deleteProject(id);
     setProjects(updatedProjects);
     if (selectedProject?.id === id) {
