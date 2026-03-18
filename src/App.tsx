@@ -10,24 +10,22 @@ const App: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>(() => getProjects());
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
-  const handleAddProject = (newProject: { clientName: string; projectName: string }) => {
+  const handleAddProject = React.useCallback((newProject: { clientName: string; projectName: string }) => {
     const updatedProjects = saveProject(newProject);
     setProjects(updatedProjects);
-  };
+  }, []);
 
-  const handleUpdateProject = (updatedProject: Project) => {
+  const handleUpdateProject = React.useCallback((updatedProject: Project) => {
     const updatedProjects = saveProject(updatedProject);
     setProjects(updatedProjects);
     setSelectedProject(updatedProject);
-  };
+  }, []);
 
-  const handleDeleteProject = (id: string) => {
+  const handleDeleteProject = React.useCallback((id: string) => {
     const updatedProjects = deleteProject(id);
     setProjects(updatedProjects);
-    if (selectedProject?.id === id) {
-      setSelectedProject(null);
-    }
-  };
+    setSelectedProject(prev => prev?.id === id ? null : prev);
+  }, []);
 
   return (
     <ErrorBoundary>

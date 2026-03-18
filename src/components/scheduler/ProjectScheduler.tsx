@@ -27,13 +27,13 @@ const ProjectScheduler: React.FC<ProjectSchedulerProps> = ({ project, onBack, on
 
   const { days, monthStart, scheduleToLaneMap } = useCalendar(currentDate, project);
 
-  const handleCopyLink = () => {
+  const handleCopyLink = React.useCallback(() => {
     navigator.clipboard.writeText(window.location.href);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  };
+  }, []);
 
-  const handleDayClick = (day: Date) => {
+  const handleDayClick = React.useCallback((day: Date) => {
     setEditingScheduleId(null);
     const dateStr = format(day, 'yyyy-MM-dd');
     setInitialSchedule({
@@ -47,15 +47,15 @@ const ProjectScheduler: React.FC<ProjectSchedulerProps> = ({ project, onBack, on
       category: 'event'
     });
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const handleScheduleClick = (schedule: Schedule) => {
+  const handleScheduleClick = React.useCallback((schedule: Schedule) => {
     setEditingScheduleId(schedule.id);
     setInitialSchedule(schedule);
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const handleSubmitSchedule = (scheduleData: Partial<Schedule>) => {
+  const handleSubmitSchedule = React.useCallback((scheduleData: Partial<Schedule>) => {
     let updatedSchedules: Schedule[];
     if (editingScheduleId) {
       updatedSchedules = project.schedules.map((s: Schedule) => 
@@ -68,14 +68,14 @@ const ProjectScheduler: React.FC<ProjectSchedulerProps> = ({ project, onBack, on
     onUpdateProject({ ...project, schedules: updatedSchedules });
     setIsModalOpen(false);
     setEditingScheduleId(null);
-  };
+  }, [project, editingScheduleId, onUpdateProject]);
 
-  const handleDeleteSchedule = (id: string) => {
+  const handleDeleteSchedule = React.useCallback((id: string) => {
     const updatedSchedules = project.schedules.filter((s: Schedule) => s.id !== id);
     onUpdateProject({ ...project, schedules: updatedSchedules });
     setIsModalOpen(false);
     setEditingScheduleId(null);
-  };
+  }, [project, onUpdateProject]);
 
   return (
     <div className="min-h-screen bg-[#FBFBFC] text-foreground font-sans">

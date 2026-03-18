@@ -12,10 +12,13 @@ import {
 import { Project, Schedule } from '../../types/project';
 
 export const useCalendar = (currentDate: Date, project: Project) => {
-  const monthStart = startOfMonth(currentDate);
-  const monthEnd = endOfMonth(monthStart);
-  const startDate = startOfWeek(monthStart);
-  const endDate = endOfWeek(monthEnd);
+  const { monthStart, startDate, endDate } = useMemo(() => {
+    const mStart = startOfMonth(currentDate);
+    const mEnd = endOfMonth(mStart);
+    const sDate = startOfWeek(mStart);
+    const eDate = endOfWeek(mEnd);
+    return { monthStart: mStart, startDate: sDate, endDate: eDate };
+  }, [currentDate]);
 
   const days = useMemo(() => 
     eachDayOfInterval({ start: startDate, end: endDate }), 
