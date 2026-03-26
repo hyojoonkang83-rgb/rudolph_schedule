@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Plus, ChevronRight, LayoutGrid, Trash2, FolderOpen } from 'lucide-react';
+import { Plus, ChevronRight, LayoutGrid, Trash2, FolderOpen, Sun, Moon } from 'lucide-react';
 import Modal from './Modal';
 import ConfirmModal from './ConfirmModal';
 import { Project } from '../types/project';
@@ -10,13 +10,17 @@ interface DashboardProps {
   onAddProject: (project: { clientName: string; projectName: string }) => void;
   onSelectProject: (project: Project) => void;
   onDeleteProject: (id: string) => void;
+  theme: 'light' | 'dark';
+  onToggleTheme: () => void;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ 
   projects, 
   onAddProject, 
   onSelectProject, 
-  onDeleteProject 
+  onDeleteProject,
+  theme,
+  onToggleTheme
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<Project | null>(null);
@@ -49,21 +53,40 @@ const Dashboard: React.FC<DashboardProps> = ({
             <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">프로젝트 대시보드</h1>
             <p className="mt-2 text-foreground/60 text-sm sm:text-base">에이전시의 모든 디자인 프로젝트를 한눈에 관리하세요.</p>
           </div>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            aria-label="새로운 프로젝트 등록하기"
-            className="hidden sm:flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-white shadow-[0_10px_20px_-5px_rgba(0,87,255,0.3)] transition-all hover:bg-primary-dark hover:shadow-xl active:scale-95"
-          >
-            <Plus className="h-4 w-4" aria-hidden="true" />
-            새 프로젝트 등록
-          </button>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={onToggleTheme}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/50 dark:bg-zinc-900/50 border border-border shadow-sm transition-all hover:bg-white dark:hover:bg-zinc-800 active:scale-95"
+              aria-label={theme === 'light' ? '다크 모드로 전환' : '라이트 모드로 전환'}
+            >
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={theme}
+                  initial={{ opacity: 0, rotate: -90, scale: 0.5 }}
+                  animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                  exit={{ opacity: 0, rotate: 90, scale: 0.5 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {theme === 'light' ? <Moon className="h-4.5 w-4.5 text-foreground/70" /> : <Sun className="h-4.5 w-4.5 text-foreground/70" />}
+                </motion.div>
+              </AnimatePresence>
+            </button>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              aria-label="새로운 프로젝트 등록하기"
+              className="hidden sm:flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-white shadow-[0_10px_20px_-5px_rgba(0,87,255,0.3)] transition-all hover:bg-primary-dark hover:shadow-xl active:scale-95"
+            >
+              <Plus className="h-4 w-4" aria-hidden="true" />
+              새 프로젝트 등록
+            </button>
+          </div>
         </header>
 
         {projects.length === 0 ? (
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center justify-center py-24 rounded-[2rem] border-2 border-dashed border-border bg-white shadow-sm text-center"
+            className="flex flex-col items-center justify-center py-24 rounded-[2rem] border-2 border-dashed border-border bg-white dark:bg-zinc-900/30 shadow-sm text-center"
           >
             <div className="h-20 w-20 text-primary/10 mb-6 bg-primary/5 rounded-3xl flex items-center justify-center">
               <FolderOpen className="h-10 w-10 text-primary/30" />
@@ -88,8 +111,8 @@ const Dashboard: React.FC<DashboardProps> = ({
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ delay: index * 0.05 }}
-                  whileHover={{ y: -6, boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1)" }}
-                  className="group relative cursor-pointer overflow-hidden rounded-3xl bg-white p-7 border border-border transition-all duration-300 hover:border-primary/20"
+                  whileHover={{ y: -6, boxShadow: theme === 'dark' ? "0 20px 25px -5px rgb(0 0 0 / 0.5)" : "0 20px 25px -5px rgb(0 0 0 / 0.1)" }}
+                  className="group relative cursor-pointer overflow-hidden rounded-3xl bg-white dark:bg-zinc-900 p-7 border border-border transition-all duration-300 hover:border-primary/20"
                 >
                   <div 
                     className="flex flex-col h-full" 

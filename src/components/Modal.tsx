@@ -26,7 +26,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="relative w-full max-w-md overflow-hidden rounded-2xl bg-white p-6 shadow-2xl border border-border"
+          className="relative w-full max-w-md overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 p-6 shadow-2xl border border-border"
         >
           <div className="mb-4 flex items-center justify-between">
             <div className="text-xl font-semibold text-foreground">{title}</div>

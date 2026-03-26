@@ -53,7 +53,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
       onClose={onClose}
       title={
         <div className="flex items-center gap-4">
-          <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${editingScheduleId ? 'bg-amber-50 text-amber-500' : 'bg-primary/10 text-primary'}`}>
+          <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${editingScheduleId ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-500' : 'bg-primary/10 text-primary'}`}>
             {editingScheduleId ? <CalendarIcon className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
           </div>
           <div>
@@ -88,7 +88,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
     >
       <form onSubmit={handleSubmit} className="space-y-6">
         {error && (
-          <div className="flex items-center gap-2 rounded-xl bg-red-50 p-4 text-xs font-bold text-red-500 border border-red-100">
+          <div className="flex items-center gap-2 rounded-xl bg-red-50 dark:bg-red-900/20 p-4 text-xs font-bold text-red-500 border border-red-100 dark:border-red-900/30">
             <AlertTriangle className="h-4 w-4" />
             {error}
           </div>
@@ -103,7 +103,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
             placeholder="일정 제목을 입력하세요"
             value={form.title}
             onChange={(e) => setForm({ ...form, title: e.target.value })}
-            className="w-full rounded-2xl border border-border bg-muted/30 px-5 py-4 text-sm font-medium transition-all focus:border-primary focus:bg-white focus:outline-none focus:ring-4 focus:ring-primary/10"
+            className="w-full rounded-2xl border border-border bg-muted/30 dark:bg-zinc-800/50 px-5 py-4 text-sm font-medium transition-all focus:border-primary focus:bg-white dark:focus:bg-zinc-800 focus:outline-none focus:ring-4 focus:ring-primary/10"
           />
         </div>
 
@@ -114,7 +114,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                 type="checkbox"
                 checked={form.isAllDay}
                 onChange={(e) => setForm({ ...form, isAllDay: e.target.checked })}
-                className="peer h-5 w-5 appearance-none rounded-md border border-border bg-white transition-all checked:bg-primary"
+                className="peer h-5 w-5 appearance-none rounded-md border border-border bg-white dark:bg-zinc-900 transition-all checked:bg-primary"
               />
               <span className="text-xs font-bold text-foreground/60 group-hover:text-foreground">종일 (All-day)</span>
             </label>
@@ -127,14 +127,14 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                 type="date"
                 value={form.startDate}
                 onChange={(e) => setForm({ ...form, startDate: e.target.value })}
-                className="flex-1 rounded-xl border border-border bg-white px-4 py-3 text-xs font-bold"
+                className="flex-1 rounded-xl border border-border bg-white dark:bg-zinc-900 px-4 py-3 text-xs font-bold text-foreground"
               />
               {!form.isAllDay && (
                 <input
                   type="time"
                   value={form.startTime || ''}
                   onChange={(e) => setForm({ ...form, startTime: e.target.value })}
-                  className="w-32 rounded-xl border border-border bg-white px-4 py-3 text-xs font-bold"
+                  className="w-32 rounded-xl border border-border bg-white dark:bg-zinc-900 px-4 py-3 text-xs font-bold text-foreground"
                 />
               )}
             </div>
@@ -145,14 +145,14 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                 min={form.startDate}
                 value={form.endDate}
                 onChange={(e) => setForm({ ...form, endDate: e.target.value })}
-                className="flex-1 rounded-xl border border-border bg-white px-4 py-3 text-xs font-bold"
+                className="flex-1 rounded-xl border border-border bg-white dark:bg-zinc-900 px-4 py-3 text-xs font-bold text-foreground"
               />
               {!form.isAllDay && (
                 <input
                   type="time"
                   value={form.endTime || ''}
                   onChange={(e) => setForm({ ...form, endTime: e.target.value })}
-                  className="w-32 rounded-xl border border-border bg-white px-4 py-3 text-xs font-bold"
+                  className="w-32 rounded-xl border border-border bg-white dark:bg-zinc-900 px-4 py-3 text-xs font-bold text-foreground"
                 />
               )}
             </div>
@@ -183,7 +183,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
               key={type.id}
               type="button"
               onClick={() => setForm({ ...form, type: type.id as any })}
-              className={`flex flex-col items-center gap-2 rounded-2xl border p-3 transition-all ${form.type === type.id ? 'border-primary bg-primary/5 text-primary' : 'bg-white'}`}
+              className={`flex flex-col items-center gap-2 rounded-2xl border p-3 transition-all ${form.type === type.id ? 'border-primary bg-primary/5 text-primary' : 'bg-white dark:bg-zinc-900 text-foreground'}`}
             >
               {type.icon}
               <span className="text-[11px] font-bold">{type.label}</span>
@@ -196,7 +196,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
             <button
               type="button"
               onClick={() => onDelete(editingScheduleId)}
-              className="flex items-center gap-2 rounded-2xl bg-red-50 px-6 py-4 text-sm font-bold text-red-500"
+              className="flex items-center gap-2 rounded-2xl bg-red-50 dark:bg-red-900/20 px-6 py-4 text-sm font-bold text-red-500 transition-colors hover:bg-red-100 dark:hover:bg-red-900/40"
             >
               <Trash2 className="h-4 w-4" />
               삭제

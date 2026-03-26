@@ -13,6 +13,16 @@
 }
 
 @layer base {
+  .dark {
+    --color-background: #000000;
+    --color-foreground: #F5F5F7;
+    --color-muted: #1C1C1E;
+    --color-border: #2C2C2E;
+  }
+}
+
+
+@layer base {
   body {
     @apply bg-background text-foreground antialiased m-0 p-0;
     font-family: var(--font-sans);

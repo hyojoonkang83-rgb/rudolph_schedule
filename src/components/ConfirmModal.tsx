@@ -37,7 +37,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
           initial={{ opacity: 0, scale: 0.95, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
-          className="relative w-full max-w-sm overflow-hidden rounded-2xl bg-white p-6 shadow-2xl border border-border"
+          className="relative w-full max-w-sm overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 p-6 shadow-2xl border border-border"
         >
           <div className="flex flex-col items-center text-center">
             <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-full ${type === 'danger' ? 'bg-red-50 text-red-500' : 'bg-primary/10 text-primary'}`}>
@@ -52,7 +52,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
           <div className="mt-6 flex gap-3">
             <button
               onClick={onClose}
-              className="flex-1 rounded-xl border border-border bg-white py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
+              className="flex-1 rounded-xl border border-border bg-white dark:bg-zinc-900 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
             >
               취소
             </button>

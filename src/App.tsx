@@ -9,6 +9,28 @@ import { Project } from './types/project';
 const App: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>(() => getProjects());
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('rudolph_theme');
+      if (saved === 'light' || saved === 'dark') return saved;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    return 'light';
+  });
+
+  React.useEffect(() => {
+    const root = window.document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    localStorage.setItem('rudolph_theme', theme);
+  }, [theme]);
+
+  const toggleTheme = React.useCallback(() => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  }, []);
 
   const handleAddProject = React.useCallback((newProject: { clientName: string; projectName: string }) => {
     const updatedProjects = saveProject(newProject);
@@ -44,6 +66,8 @@ const App: React.FC = () => {
               onAddProject={handleAddProject} 
               onSelectProject={setSelectedProject} 
               onDeleteProject={handleDeleteProject}
+              theme={theme}
+              onToggleTheme={toggleTheme}
             />
           </motion.div>
         ) : (

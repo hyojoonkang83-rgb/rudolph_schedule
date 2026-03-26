@@ -26,13 +26,13 @@ const DayCell: React.FC<DayCellProps> = ({
   return (
     <div
       onClick={() => onDayClick(day)}
-      className={`group relative flex min-h-[140px] cursor-pointer flex-col bg-white border-r border-b border-border/30 transition-all hover:bg-primary/[0.01] ${
-        !isCurrentMonth ? 'bg-muted/10' : ''
+      className={`group relative flex min-h-[140px] cursor-pointer flex-col bg-background border-r border-b border-border/30 transition-all hover:bg-primary/[0.02] ${
+        !isCurrentMonth ? 'bg-muted/20 dark:bg-zinc-900/40' : ''
       }`}
     >
       <div className="p-3 pb-1">
         <span className={`text-sm font-black transition-colors ${
-          isToday ? 'text-primary' : (isCurrentMonth ? 'text-foreground/40' : 'text-foreground/10')
+          isToday ? 'text-primary' : (isCurrentMonth ? 'text-foreground/40' : 'text-foreground/20')
         } group-hover:text-foreground/60`}>
           {format(day, 'd')}
         </span>
@@ -56,7 +56,7 @@ const DayCell: React.FC<DayCellProps> = ({
         {schedules.length > 4 && (
           <div 
             onClick={(e) => onMoreClick(e, day)}
-            className="absolute left-1 bottom-1.5 text-[10px] font-bold text-foreground/40 hover:text-primary transition-colors bg-white/90 py-0.5 px-1.5 rounded-md border border-border/50 shadow-sm"
+            className="absolute left-1 bottom-1.5 text-[10px] font-bold text-foreground/40 hover:text-primary transition-colors bg-background/90 py-0.5 px-1.5 rounded-md border border-border/50 shadow-sm"
           >
             + {schedules.length - 4} more
           </div>

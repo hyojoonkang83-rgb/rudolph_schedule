@@ -34,8 +34,8 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
   };
 
   return (
-    <div className="overflow-hidden rounded-[2.5rem] border border-border bg-white shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)]">
-      <div className="calendar-grid border-b border-border/50 bg-[#FBFBFC] py-4 text-center text-[11px] font-bold uppercase tracking-[0.2em] text-foreground/30">
+    <div className="overflow-hidden rounded-[2.5rem] border border-border bg-background shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)]">
+      <div className="calendar-grid border-b border-border/50 bg-muted/30 py-4 text-center text-[11px] font-bold uppercase tracking-[0.2em] text-foreground/30">
         {['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map(day => (
           <div key={day}>{day}</div>
         ))}

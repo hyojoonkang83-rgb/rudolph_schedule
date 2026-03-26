@@ -78,8 +78,8 @@ const ProjectScheduler: React.FC<ProjectSchedulerProps> = ({ project, onBack, on
   }, [project, onUpdateProject]);
 
   return (
-    <div className="min-h-screen bg-[#FBFBFC] text-foreground font-sans">
-      <header className="sticky top-0 z-10 flex items-center justify-between border-b border-border/50 bg-white/80 px-6 py-4 backdrop-blur-xl">
+    <div className="min-h-screen bg-background text-foreground font-sans">
+      <header className="sticky top-0 z-10 flex items-center justify-between border-b border-border/50 bg-background/80 px-6 py-4 backdrop-blur-xl">
         <div className="flex items-center gap-4">
           <button
             onClick={onBack}
@@ -98,7 +98,7 @@ const ProjectScheduler: React.FC<ProjectSchedulerProps> = ({ project, onBack, on
           <button
             onClick={handleCopyLink}
             aria-label={copied ? "링크 복사됨" : "현재 공유 링크 복사하기"}
-            className="flex items-center gap-2 rounded-xl border border-border bg-white px-4 py-2.5 text-xs font-bold shadow-sm hover:bg-muted active:scale-95"
+            className="flex items-center gap-2 rounded-xl border border-border bg-white dark:bg-zinc-900 px-4 py-2.5 text-xs font-bold shadow-sm hover:bg-muted active:scale-95 transition-colors"
           >
             <AnimatePresence mode="wait">
               {copied ? (
