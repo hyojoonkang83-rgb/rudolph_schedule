@@ -52,46 +52,46 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       title={
-        <div className="flex items-center gap-4">
-          <div className={`h-12 w-12 rounded-2xl flex items-center justify-center ${editingScheduleId ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600' : 'bg-primary/10 text-primary'}`}>
-            {editingScheduleId ? <CalendarIcon className="h-6 w-6" /> : <Plus className="h-6 w-6" />}
+        <div className="flex items-center gap-3">
+          <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${editingScheduleId ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600' : 'bg-primary/10 text-primary'}`}>
+            {editingScheduleId ? <CalendarIcon className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
           </div>
           <div>
-            <h3 className="text-xl font-black text-foreground">{editingScheduleId ? '일정 수정' : '일정 추가'}</h3>
-            <p className="text-[11px] font-black text-foreground/30 uppercase tracking-[0.2em] mt-0.5">
+            <h3 className="text-lg font-black text-foreground">{editingScheduleId ? '일정 수정' : '일정 추가'}</h3>
+            <p className="text-[10px] font-black text-foreground/30 uppercase tracking-[0.2em] mt-0">
               {editingScheduleId ? 'Edit Schedule' : 'New Schedule'}
             </p>
           </div>
         </div>
       }
     >
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="flex items-center gap-1.5 p-1.5 bg-muted/40 rounded-2xl border border-border/50">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="flex items-center gap-1 p-1 bg-muted/40 rounded-xl border border-border/50">
           <button 
             type="button"
             onClick={() => setModalTab('event')}
-            className={`flex-1 py-2.5 text-xs font-black transition-all rounded-xl uppercase tracking-widest ${modalTab === 'event' ? 'bg-primary/90 text-white shadow-lg' : 'text-foreground/40 hover:bg-muted/50'}`}
+            className={`flex-1 py-1.5 text-[10px] font-black transition-all rounded-lg uppercase tracking-widest ${modalTab === 'event' ? 'bg-primary/90 text-white shadow-md' : 'text-foreground/40 hover:bg-muted/50'}`}
           >
             이벤트
           </button>
           <button 
             type="button"
             onClick={() => setModalTab('task')}
-            className={`flex-1 py-2.5 text-xs font-black transition-all rounded-xl uppercase tracking-widest ${modalTab === 'task' ? 'bg-zinc-700 text-white shadow-lg' : 'text-foreground/40 hover:bg-muted/50'}`}
+            className={`flex-1 py-1.5 text-[10px] font-black transition-all rounded-lg uppercase tracking-widest ${modalTab === 'task' ? 'bg-zinc-700 text-white shadow-md' : 'text-foreground/40 hover:bg-muted/50'}`}
           >
             할 일
           </button>
         </div>
 
         {error && (
-          <div className="flex items-center gap-2 rounded-2xl bg-red-50 dark:bg-red-950/30 p-4 text-xs font-black text-red-500 border border-red-200 dark:border-red-900/50">
-            <AlertTriangle className="h-4 w-4" />
+          <div className="flex items-center gap-2 rounded-xl bg-red-50 dark:bg-red-950/30 p-3 text-xs font-black text-red-500 border border-red-200 dark:border-red-900/50">
+            <AlertTriangle className="h-3.5 w-3.5" />
             {error}
           </div>
         )}
 
         <div>
-          <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2 ml-1">일정 제목</label>
+          <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-1.5 ml-1">일정 제목</label>
           <input
             autoFocus
             required
@@ -99,56 +99,56 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
             placeholder="일정 제목을 입력하세요"
             value={form.title}
             onChange={(e) => setForm({ ...form, title: e.target.value })}
-            className="w-full rounded-2xl border border-border bg-muted/20 dark:bg-zinc-800/20 px-5 py-4 text-sm font-bold transition-all focus:border-primary focus:bg-background focus:outline-none focus:ring-4 focus:ring-primary/10"
+            className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm font-bold transition-all focus:border-primary focus:bg-surface focus:outline-none focus:ring-4 focus:ring-primary/10 text-foreground placeholder-foreground/20"
           />
         </div>
 
-        <div className="space-y-4 rounded-[1.5rem] bg-muted/10 p-5 border border-border/40">
-          <div className="flex items-center justify-between mb-1">
-            <label className="flex items-center gap-3 cursor-pointer group">
+        <div className="space-y-3 rounded-2xl bg-muted/40 p-4 border border-border/40">
+          <div className="flex items-center justify-between mb-0.5">
+            <label className="flex items-center gap-2.5 cursor-pointer group">
               <input
                 type="checkbox"
                 checked={form.isAllDay}
                 onChange={(e) => setForm({ ...form, isAllDay: e.target.checked })}
-                className="peer h-5 w-5 appearance-none rounded-lg border border-border bg-background transition-all checked:bg-primary/80"
+                className="peer h-4 w-4 appearance-none rounded border border-border bg-background transition-all checked:bg-primary"
               />
-              <span className="text-xs font-black text-foreground/50 group-hover:text-foreground">종일 일정 (All-day)</span>
+              <span className="text-[11px] font-black text-foreground/70 group-hover:text-foreground">종일 일정 (All-day)</span>
             </label>
           </div>
 
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-3">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
               <input
                 required
                 type="date"
                 value={form.startDate}
                 onChange={(e) => setForm({ ...form, startDate: e.target.value })}
-                className="flex-1 rounded-xl border border-border/60 bg-background px-4 py-3.5 text-xs font-black text-foreground/80"
+                className="flex-1 rounded-lg border border-border bg-background px-3 py-2.5 text-xs font-black text-foreground/90 transition-colors focus:border-primary focus:outline-none"
               />
               {!form.isAllDay && (
                 <input
                   type="time"
                   value={form.startTime || ''}
                   onChange={(e) => setForm({ ...form, startTime: e.target.value })}
-                  className="w-32 rounded-xl border border-border/60 bg-background px-4 py-3.5 text-xs font-black text-foreground/80"
+                  className="w-28 rounded-lg border border-border bg-background px-3 py-2.5 text-xs font-black text-foreground/90 transition-colors focus:border-primary focus:outline-none"
                 />
               )}
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <input
                 required
                 type="date"
                 min={form.startDate}
                 value={form.endDate}
                 onChange={(e) => setForm({ ...form, endDate: e.target.value })}
-                className="flex-1 rounded-xl border border-border/60 bg-background px-4 py-3.5 text-xs font-black text-foreground/80"
+                className="flex-1 rounded-lg border border-border bg-background px-3 py-2.5 text-xs font-black text-foreground/90 transition-colors focus:border-primary focus:outline-none"
               />
               {!form.isAllDay && (
                 <input
                   type="time"
                   value={form.endTime || ''}
                   onChange={(e) => setForm({ ...form, endTime: e.target.value })}
-                  className="w-32 rounded-xl border border-border/60 bg-background px-4 py-3.5 text-xs font-black text-foreground/80"
+                  className="w-28 rounded-lg border border-border bg-background px-3 py-2.5 text-xs font-black text-foreground/90 transition-colors focus:border-primary focus:outline-none"
                 />
               )}
             </div>
@@ -156,24 +156,24 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
         </div>
 
         <div>
-          <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-3 ml-1">색상</label>
-          <div className="flex flex-wrap gap-3">
+          <label className="block text-[10px] font-black text-foreground/40 uppercase tracking-widest mb-2.5 ml-1">색상</label>
+          <div className="flex flex-wrap gap-2.5">
             {PRESET_COLORS.map(color => (
               <button
                 key={color.id}
                 type="button"
                 onClick={() => setForm({ ...form, color: color.id })}
-                className={`h-8 w-8 rounded-full transition-all ${color.bg} ${form.color === color.id ? 'ring-4 ring-primary/20 scale-110 shadow-lg' : 'opacity-80 hover:opacity-100'}`}
+                className={`h-7 w-7 rounded-full transition-all ${color.bg} ${form.color === color.id ? 'ring-2 ring-primary/20 ring-offset-2 scale-110 shadow-md' : 'opacity-80 hover:opacity-100 hover:scale-105'}`}
               />
             ))}
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-2">
           {[
-            { id: 'work', label: '실무', icon: <Briefcase className="h-4 w-4" /> },
-            { id: 'meeting', label: '미팅', icon: <Users className="h-4 w-4" /> },
-            { id: 'deadline', label: '마감', icon: <AlertTriangle className="h-4 w-4" /> }
+            { id: 'work', label: '실무', icon: <Briefcase className="h-3.5 w-3.5" /> },
+            { id: 'meeting', label: '미팅', icon: <Users className="h-3.5 w-3.5" /> },
+            { id: 'deadline', label: '마감', icon: <AlertTriangle className="h-3.5 w-3.5" /> }
           ].map(type => {
             const isActive = form.type === type.id;
             return (
@@ -181,33 +181,33 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                 key={type.id}
                 type="button"
                 onClick={() => setForm({ ...form, type: type.id as Schedule['type'] })}
-                className={`flex flex-col items-center gap-2 rounded-2xl border p-4 transition-all duration-300 ${
+                className={`flex flex-col items-center gap-1.5 rounded-xl border p-2.5 transition-all duration-300 ${
                   isActive 
-                    ? 'border-primary bg-primary/10 text-primary scale-[1.02] shadow-sm' 
-                    : 'border-border/50 bg-muted/20 dark:bg-muted/5 text-foreground/40 hover:bg-muted/40 hover:text-foreground'
+                    ? 'border-primary bg-primary/20 text-primary scale-[1.02] shadow-sm ring-2 ring-primary/10' 
+                    : 'border-border bg-muted/10 text-foreground/60 hover:bg-muted/30 hover:text-foreground'
                 }`}
               >
                 {type.icon}
-                <span className="text-[11px] font-black uppercase tracking-widest">{type.label}</span>
+                <span className="text-[10px] font-black uppercase tracking-widest">{type.label}</span>
               </button>
             );
           })}
         </div>
 
-        <div className="pt-4 flex items-center justify-between gap-3">
+        <div className="pt-3 flex items-center justify-between gap-2.5">
           {editingScheduleId && (
             <button
               type="button"
               onClick={() => onDelete(editingScheduleId)}
-              className="flex items-center gap-2 rounded-2xl bg-red-50 dark:bg-red-950/20 px-7 py-4.5 text-sm font-black text-red-500 transition-all hover:bg-red-100 dark:hover:bg-red-900/40"
+              className="flex items-center gap-2 rounded-xl bg-red-50 dark:bg-red-950/20 px-5 py-3.5 text-[13px] font-black text-red-500 transition-all hover:bg-red-100 dark:hover:bg-red-900/40"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="h-3.5 w-3.5" />
               삭제
             </button>
           )}
           <button
             type="submit"
-            className="flex-1 rounded-2xl bg-primary px-8 py-4.5 text-sm font-black text-white shadow-xl shadow-primary/25 hover:bg-primary/90 transition-all active:scale-[0.98]"
+            className="flex-1 rounded-xl bg-primary px-7 py-3.5 text-[13px] font-black text-white shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all active:scale-[0.98]"
           >
             {editingScheduleId ? '일정 수정 완료' : '새 일정 저장'}
           </button>

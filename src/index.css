@@ -1,32 +1,44 @@
 @import "tailwindcss";
 
-@theme {
-  --color-background: #FFFFFF;
-  --color-foreground: #1A1A1A;
-  --color-primary: #0057FF;
-  --color-primary-dark: #0046CC;
-  --color-primary-light: #3379FF;
-  --color-muted: #F5F5F7;
-  --color-muted-foreground: #6E6E73;
-  --color-border: #E5E5E7;
-  --color-card: #FFFFFF;
-  --color-card-foreground: #1A1A1A;
-  --color-surface: #FBFBFC;
-  
-  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+:root {
+  --background: #FFFFFF;
+  --foreground: #1A1A1A;
+  --primary: #0057FF;
+  --primary-dark: #0046CC;
+  --primary-light: #3379FF;
+  --muted: #F5F5F7;
+  --muted-foreground: #6E6E73;
+  --border: #E5E5E7;
+  --card: #FFFFFF;
+  --card-foreground: #1A1A1A;
+  --surface: #FBFBFC;
 }
 
-@layer base {
-  .dark {
-    --color-background: #000000;
-    --color-foreground: #F5F5F7;
-    --color-muted: #1C1C1E;
-    --color-muted-foreground: #8E8E93;
-    --color-border: #2C2C2E;
-    --color-card: #0F0F10;
-    --color-card-foreground: #F5F5F7;
-    --color-surface: #161618;
-  }
+.dark {
+  --background: #09090B;
+  --foreground: #FAFAFA;
+  --muted: #18181B;
+  --muted-foreground: #A1A1AA;
+  --border: #27272A;
+  --card: #09090B;
+  --card-foreground: #FAFAFA;
+  --surface: #121214;
+}
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-light: var(--primary-light);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-surface: var(--surface);
+  
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 
