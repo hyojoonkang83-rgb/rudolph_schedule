@@ -46,8 +46,8 @@ const ScheduleItem: React.FC<ScheduleItemProps> = ({ schedule, day, onClick }) =
       >
         {isStart && (
           <div className="flex items-center gap-1.5 px-2 w-full h-full overflow-hidden">
-            <div className={`h-1.5 w-1.5 flex-shrink-0 rounded-full ${colorData.bg}`} />
-            <span className="truncate flex-1 font-bold text-[11px] tracking-tight">{schedule.title}</span>
+            <div className={`h-2 w-2 flex-shrink-0 rounded-full ${colorData.bg} shadow-sm`} />
+            <span className="truncate flex-1 font-black text-[11px] tracking-tighter text-foreground/90">{schedule.title}</span>
           </div>
         )}
         {!isStart && <div className="h-full w-full" />}
@@ -60,13 +60,13 @@ const ScheduleItem: React.FC<ScheduleItemProps> = ({ schedule, day, onClick }) =
       onClick={onClick}
       style={{ top: `${topPos}px` }}
       className={`absolute left-0 right-0 flex items-center justify-start h-[24px] border-y transition-all group/item
-        bg-transparent border-transparent text-foreground/80
+        bg-transparent border-transparent
       `}
     >
-      <div className="flex items-center gap-1.5 px-1.5 h-full overflow-hidden w-full">
+      <div className="flex items-center gap-1.5 px-2 h-full overflow-hidden w-full">
         <div className={`h-1.5 w-1.5 flex-shrink-0 rounded-full ${colorData.bg}`} />
-        <span className="text-[9px] font-bold text-foreground/40 flex-shrink-0">{schedule.startTime}</span>
-        <span className="truncate flex-1 font-bold text-[11px] tracking-tight">{schedule.title}</span>
+        <span className="text-[9px] font-black text-foreground/60 flex-shrink-0 tracking-tighter uppercase">{schedule.startTime}</span>
+        <span className="truncate flex-1 font-black text-[11px] tracking-tighter text-foreground/90">{schedule.title}</span>
       </div>
     </div>
   );

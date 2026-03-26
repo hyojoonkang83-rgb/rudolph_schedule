@@ -27,17 +27,30 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             className="relative w-full max-w-md overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 p-6 shadow-2xl border border-border"
           >
-            <div className="mb-4 flex items-center justify-between">
-              <div className="text-xl font-semibold text-foreground">{title}</div>
-              <button
-                onClick={onClose}
-                aria-label="닫기"
-                className="rounded-full p-2 text-foreground/20 transition-colors hover:bg-muted hover:text-foreground active:scale-95"
-              >
-                <X className="h-5 w-5" aria-hidden="true" />
-              </button>
+            <div className="relative">
+              {title && (
+                <div className="mb-6 flex items-center justify-between">
+                  <div className="flex-1">{title}</div>
+                  <button
+                    onClick={onClose}
+                    aria-label="닫기"
+                    className="ml-4 rounded-full p-2 text-foreground/20 transition-colors hover:bg-muted hover:text-foreground active:scale-90 shrink-0"
+                  >
+                    <X className="h-5 w-5" aria-hidden="true" />
+                  </button>
+                </div>
+              )}
+              {!title && (
+                <button
+                  onClick={onClose}
+                  aria-label="닫기"
+                  className="absolute top-0 right-0 p-2 text-foreground/20 transition-colors hover:bg-muted hover:text-foreground active:scale-90 z-10"
+                >
+                  <X className="h-5 w-5" aria-hidden="true" />
+                </button>
+              )}
+              {children}
             </div>
-            {children}
           </motion.div>
         </div>
       )}

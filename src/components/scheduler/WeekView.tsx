@@ -191,25 +191,23 @@ const NowIndicator = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const dayIndex = (now.getDay() + 6) % 7; // Adjust for Monday start if needed, but startOfWeek defaults to Sunday usually.
-  // My startOfWeek is default (Sunday). so now.getDay() is correct (0=Sun, 6=Sat)
   const currentDayIndex = now.getDay(); 
   const mins = now.getHours() * 60 + now.getMinutes();
   const top = (mins / 60) * 60;
 
   return (
     <div 
-      className="absolute left-0 right-0 z-40 pointer-events-none flex items-center"
+      className="absolute left-0 right-0 z-40 pointer-events-none flex items-center h-0.5"
       style={{ top: `${top}px` }}
     >
-      <div className="w-16 flex justify-end pr-2">
-        <span className="text-[10px] font-black text-red-500 bg-background px-1">{format(now, 'HH:mm')}</span>
+      <div className="absolute -left-14 w-12 flex justify-end">
+        <span className="text-[10px] font-black text-red-500 bg-background px-1 rounded-sm shadow-sm">{format(now, 'HH:mm')}</span>
       </div>
       <div className="flex-1 relative flex items-center">
-        <div className="h-0.5 w-full bg-red-500/50" />
+        <div className="h-0.5 w-full bg-red-500/40" />
         <div 
-          className="absolute h-3 w-3 rounded-full bg-red-500 shadow-lg shadow-red-500/50 -left-1.5"
-          style={{ left: `calc(${(currentDayIndex / 7) * 100}% - 6px)` }}
+          className="absolute h-3 w-3 rounded-full bg-red-500 shadow-lg shadow-red-500/50 -translate-x-1/2"
+          style={{ left: `${((currentDayIndex + 0.5) / 7) * 100}%` }}
         />
       </div>
     </div>
