@@ -27,7 +27,7 @@ const DayCell: React.FC<DayCellProps> = ({
     <div
       onClick={() => onDayClick(day)}
       className={`group relative flex min-h-[140px] cursor-pointer flex-col bg-background border-r border-b border-border/30 transition-all hover:bg-primary/[0.02] ${
-        !isCurrentMonth ? 'bg-muted/20 dark:bg-zinc-900/40' : ''
+        !isCurrentMonth ? 'bg-muted/30' : ''
       }`}
     >
       <div className="p-3 pb-1">

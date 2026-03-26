@@ -98,7 +98,7 @@ const ProjectScheduler: React.FC<ProjectSchedulerProps> = ({ project, onBack, on
           <button
             onClick={handleCopyLink}
             aria-label={copied ? "링크 복사됨" : "현재 공유 링크 복사하기"}
-            className="flex items-center gap-2 rounded-xl border border-border bg-white dark:bg-zinc-900 px-4 py-2.5 text-xs font-bold shadow-sm hover:bg-muted active:scale-95 transition-colors"
+            className="flex items-center gap-2 rounded-xl border border-border bg-card px-4 py-2.5 text-xs font-bold shadow-sm hover:bg-muted active:scale-95 transition-colors"
           >
             <AnimatePresence mode="wait">
               {copied ? (

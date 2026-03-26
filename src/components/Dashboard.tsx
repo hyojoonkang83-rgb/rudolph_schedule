@@ -39,7 +39,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-muted/30 px-6 py-12 lg:px-24">
+    <div className="min-h-screen bg-background px-6 py-12 lg:px-24">
       <div className="mx-auto max-w-5xl relative">
         <header className="mb-12 flex items-center justify-between">
           <div>
@@ -56,7 +56,7 @@ const Dashboard: React.FC<DashboardProps> = ({
           <div className="flex items-center gap-4">
             <button
               onClick={onToggleTheme}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/50 dark:bg-zinc-900/50 border border-border shadow-sm transition-all hover:bg-white dark:hover:bg-zinc-800 active:scale-95"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-card/50 border border-border shadow-sm transition-all hover:bg-card active:scale-95"
               aria-label={theme === 'light' ? '다크 모드로 전환' : '라이트 모드로 전환'}
             >
               <AnimatePresence mode="wait">
@@ -86,7 +86,7 @@ const Dashboard: React.FC<DashboardProps> = ({
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center justify-center py-24 rounded-[2rem] border-2 border-dashed border-border bg-white dark:bg-zinc-900/30 shadow-sm text-center"
+            className="flex flex-col items-center justify-center py-24 rounded-[2rem] border-2 border-dashed border-border bg-card/30 shadow-sm text-center"
           >
             <div className="h-20 w-20 text-primary/10 mb-6 bg-primary/5 rounded-3xl flex items-center justify-center">
               <FolderOpen className="h-10 w-10 text-primary/30" />
@@ -112,7 +112,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ delay: index * 0.05 }}
                   whileHover={{ y: -6, boxShadow: theme === 'dark' ? "0 20px 25px -5px rgb(0 0 0 / 0.5)" : "0 20px 25px -5px rgb(0 0 0 / 0.1)" }}
-                  className="group relative cursor-pointer overflow-hidden rounded-3xl bg-white dark:bg-zinc-900 p-7 border border-border transition-all duration-300 hover:border-primary/20"
+                  className="group relative cursor-pointer overflow-hidden rounded-3xl bg-card p-7 border border-border transition-all duration-300 hover:border-primary/20"
                 >
                   <div 
                     className="flex flex-col h-full" 
@@ -138,7 +138,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                       <h3 className="mt-3 text-xl font-bold text-foreground leading-tight transition-colors group-hover:text-primary">
                         {project.projectName}
                       </h3>
-                      <div className="mt-4 flex items-center gap-2 text-[11px] font-medium text-foreground/30">
+                      <div className="mt-4 flex items-center gap-2 text-[11px] font-medium text-card-foreground/30">
                         <span>{project.schedules.length}개의 일정</span>
                         <span className="h-1 w-1 rounded-full bg-border" />
                         <span>영업일 기준</span>
