@@ -10,8 +10,17 @@ interface ScheduleItemProps {
 }
 
 const ScheduleItem: React.FC<ScheduleItemProps> = ({ schedule, day, onClick }) => {
-  const start = startOfDay(parseISO(schedule.startDate));
-  const end = startOfDay(parseISO(schedule.endDate));
+  if (!schedule.startDate || !schedule.endDate) return null;
+
+  let start: Date;
+  let end: Date;
+  try {
+    start = startOfDay(parseISO(schedule.startDate));
+    end = startOfDay(parseISO(schedule.endDate));
+  } catch (e) {
+    return null;
+  }
+  
   const current = startOfDay(day);
   
   const isMultiDay = !isSameDay(start, end);

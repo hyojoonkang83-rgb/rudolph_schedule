@@ -29,6 +29,46 @@ const App: React.FC = () => {
     localStorage.setItem('rudolph_theme', theme);
   }, [theme]);
 
+  // Sync state with URL for browser navigation support
+  React.useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const projectId = searchParams.get('project');
+    if (projectId) {
+      const project = projects.find(p => p.id === projectId);
+      if (project && (!selectedProject || selectedProject.id !== projectId)) {
+        setSelectedProject(project);
+      }
+    } else if (selectedProject) {
+      setSelectedProject(null);
+    }
+  }, []);
+
+  const handleSelectProject = React.useCallback((project: Project | null) => {
+    setSelectedProject(project);
+    const url = new URL(window.location.href);
+    if (project) {
+      url.searchParams.set('project', project.id);
+    } else {
+      url.searchParams.delete('project');
+    }
+    window.history.pushState({}, '', url.toString());
+  }, []);
+
+  React.useEffect(() => {
+    const handlePopState = () => {
+      const searchParams = new URLSearchParams(window.location.search);
+      const projectId = searchParams.get('project');
+      if (projectId) {
+        const project = projects.find(p => p.id === projectId);
+        setSelectedProject(project || null);
+      } else {
+        setSelectedProject(null);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [projects]);
+
   const toggleTheme = React.useCallback(() => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
   }, []);
@@ -70,7 +110,7 @@ const App: React.FC = () => {
             <Dashboard 
               projects={projects} 
               onSaveProject={handleSaveProject} 
-              onSelectProject={setSelectedProject} 
+              onSelectProject={handleSelectProject} 
               onDeleteProject={handleDeleteProject}
               theme={theme}
               onToggleTheme={toggleTheme}
@@ -88,8 +128,10 @@ const App: React.FC = () => {
           >
             <ProjectScheduler 
               project={selectedProject} 
-              onBack={() => setSelectedProject(null)} 
+              onBack={() => handleSelectProject(null)} 
               onUpdateProject={handleUpdateProject}
+              theme={theme}
+              onToggleTheme={toggleTheme}
             />
           </motion.div>
         )}

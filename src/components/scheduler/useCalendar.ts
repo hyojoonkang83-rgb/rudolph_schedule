@@ -11,14 +11,20 @@ import {
 } from 'date-fns';
 import { Project, Schedule } from '../../types/project';
 
-export const useCalendar = (currentDate: Date, project: Project) => {
+export const useCalendar = (currentDate: Date, project: Project, viewMode: 'month' | 'week' = 'month') => {
   const { monthStart, startDate, endDate } = useMemo(() => {
-    const mStart = startOfMonth(currentDate);
-    const mEnd = endOfMonth(mStart);
-    const sDate = startOfWeek(mStart);
-    const eDate = endOfWeek(mEnd);
-    return { monthStart: mStart, startDate: sDate, endDate: eDate };
-  }, [currentDate]);
+    if (viewMode === 'month') {
+      const mStart = startOfMonth(currentDate);
+      const mEnd = endOfMonth(mStart);
+      const sDate = startOfWeek(mStart);
+      const eDate = endOfWeek(mEnd);
+      return { monthStart: mStart, startDate: sDate, endDate: eDate };
+    } else {
+      const sDate = startOfWeek(currentDate);
+      const eDate = endOfWeek(currentDate);
+      return { monthStart: startOfMonth(currentDate), startDate: sDate, endDate: eDate };
+    }
+  }, [currentDate, viewMode]);
 
   const days = useMemo(() => 
     eachDayOfInterval({ start: startDate, end: endDate }), 
@@ -26,14 +32,30 @@ export const useCalendar = (currentDate: Date, project: Project) => {
   );
 
   const scheduleToLaneMap = useMemo(() => {
-    const sortedSchedules = [...project.schedules].sort((a, b) => {
-      const aStart = parseISO(a.startDate).getTime();
-      const bStart = parseISO(b.startDate).getTime();
-      if (aStart !== bStart) return aStart - bStart;
-      
-      const aEnd = parseISO(a.endDate).getTime();
-      const bEnd = parseISO(b.endDate).getTime();
-      return bEnd - aEnd; // Longer first
+    // Filter out invalid schedules to prevent crash
+    const validSchedules = project.schedules.filter(s => {
+      if (!s.startDate || !s.endDate) return false;
+      try {
+        parseISO(s.startDate);
+        parseISO(s.endDate);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    });
+
+    const sortedSchedules = [...validSchedules].sort((a, b) => {
+      try {
+        const aStart = parseISO(a.startDate).getTime();
+        const bStart = parseISO(b.startDate).getTime();
+        if (aStart !== bStart) return aStart - bStart;
+        
+        const aEnd = parseISO(a.endDate).getTime();
+        const bEnd = parseISO(b.endDate).getTime();
+        return bEnd - aEnd; // Longer first
+      } catch (e) {
+        return 0;
+      }
     });
 
     const lanes: Schedule[][] = []; 

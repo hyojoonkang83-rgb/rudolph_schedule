@@ -4,6 +4,7 @@ import { Schedule } from '../../types/project';
 import ScheduleItem from './ScheduleItem';
 
 interface DayCellProps {
+  viewMode: 'month' | 'week';
   day: Date;
   monthStart: Date;
   schedules: Schedule[];
@@ -13,6 +14,7 @@ interface DayCellProps {
 }
 
 const DayCell: React.FC<DayCellProps> = ({ 
+  viewMode,
   day, 
   monthStart, 
   schedules, 
@@ -22,25 +24,31 @@ const DayCell: React.FC<DayCellProps> = ({
 }) => {
   const isCurrentMonth = isSameMonth(day, monthStart);
   const isToday = isSameDay(day, new Date());
+  
+  const displayLimit = viewMode === 'month' ? 4 : 15;
 
   return (
     <div
       onClick={() => onDayClick(day)}
-      className={`group relative flex min-h-[140px] cursor-pointer flex-col bg-background border-r border-b border-border/30 transition-all hover:bg-primary/[0.02] ${
-        !isCurrentMonth ? 'bg-muted/30' : ''
+      className={`group relative flex cursor-pointer flex-col bg-background border-r border-b border-border/45 transition-all hover:bg-primary/[0.02] ${
+        viewMode === 'month' ? 'min-h-[140px]' : 'min-h-[500px]'
+      } ${
+        !isCurrentMonth && viewMode === 'month' ? 'bg-muted/30' : ''
       }`}
     >
-      <div className="p-3 pb-1">
-        <span className={`text-sm font-black transition-colors ${
-          isToday ? 'text-primary' : (isCurrentMonth ? 'text-foreground/40' : 'text-foreground/20')
-        } group-hover:text-foreground/60`}>
-          {format(day, 'd')}
-        </span>
-      </div>
+      {viewMode === 'month' && (
+        <div className="p-3 pb-1">
+          <span className={`text-sm font-black transition-colors ${
+            isToday ? 'text-primary' : (isCurrentMonth ? 'text-foreground/40' : 'text-foreground/20')
+          } group-hover:text-foreground/60`}>
+            {format(day, 'd')}
+          </span>
+        </div>
+      )}
       
-      <div className="mt-1 relative flex-1">
+      <div className={`mt-1 relative flex-1 ${viewMode === 'week' ? 'pt-4' : ''}`}>
         {schedules.map(schedule => {
-          if ((schedule.lane || 0) > 3) return null;
+          if ((schedule.lane || 0) >= displayLimit) return null;
           return (
             <ScheduleItem
               key={schedule.id}
@@ -53,12 +61,12 @@ const DayCell: React.FC<DayCellProps> = ({
             />
           );
         })}
-        {schedules.length > 4 && (
+        {schedules.length > displayLimit && (
           <div 
             onClick={(e) => onMoreClick(e, day)}
             className="absolute left-1 bottom-1.5 text-[10px] font-bold text-foreground/40 hover:text-primary transition-colors bg-background/90 py-0.5 px-1.5 rounded-md border border-border/50 shadow-sm"
           >
-            + {schedules.length - 4} more
+            + {schedules.length - displayLimit} more
           </div>
         )}
       </div>
