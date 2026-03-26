@@ -18,5 +18,6 @@ export interface Project {
   id: string;
   clientName: string;
   projectName: string;
+  imageUrl?: string;
   schedules: Schedule[];
 }

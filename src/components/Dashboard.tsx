@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Plus, LayoutGrid, Trash2, FolderOpen, Sun, Moon, MoreHorizontal, Edit2, Share2 } from 'lucide-react';
+import { Plus, LayoutGrid, Trash2, FolderOpen, Sun, Moon, MoreHorizontal, Edit2, Share2, Upload, X, ChevronRight } from 'lucide-react';
 import Modal from './Modal';
 import ConfirmModal from './ConfirmModal';
 import { Project } from '../types/project';
@@ -86,7 +86,8 @@ const Dashboard: React.FC<DashboardProps> = ({
   const [confirmDelete, setConfirmDelete] = useState<Project | null>(null);
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
-  const [newProject, setNewProject] = useState({ clientName: '', projectName: '' });
+  const [newProject, setNewProject] = useState({ clientName: '', projectName: '', imageUrl: '' });
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -102,9 +103,9 @@ const Dashboard: React.FC<DashboardProps> = ({
     
     if (clientName && projectName) {
       if (editingProject) {
-        onSaveProject({ ...editingProject, clientName, projectName }); 
+        onSaveProject({ ...editingProject, clientName, projectName, imageUrl: newProject.imageUrl }); 
       } else {
-        onSaveProject({ clientName, projectName });
+        onSaveProject({ clientName, projectName, imageUrl: newProject.imageUrl });
       }
       handleCloseModal();
     }
@@ -113,14 +114,43 @@ const Dashboard: React.FC<DashboardProps> = ({
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingProject(null);
-    setNewProject({ clientName: '', projectName: '' });
+    setNewProject({ clientName: '', projectName: '', imageUrl: '' });
   };
 
   const handleEditClick = (project: Project) => {
     setEditingProject(project);
-    setNewProject({ clientName: project.clientName, projectName: project.projectName });
+    setNewProject({ 
+      clientName: project.clientName, 
+      projectName: project.projectName,
+      imageUrl: project.imageUrl || ''
+    });
     setIsModalOpen(true);
     setActiveMenuId(null);
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = 60;
+          canvas.height = 60;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            const size = Math.min(img.width, img.height);
+            const offsetX = (img.width - size) / 2;
+            const offsetY = (img.height - size) / 2;
+            ctx.drawImage(img, offsetX, offsetY, size, size, 0, 0, 60, 60);
+            setNewProject({ ...newProject, imageUrl: canvas.toDataURL('image/png') });
+          }
+        };
+        img.src = event.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleShareClick = (project: Project) => {
@@ -225,8 +255,12 @@ const Dashboard: React.FC<DashboardProps> = ({
                     onKeyDown={(e) => e.key === 'Enter' && onSelectProject(project)}
                   >
                     <div className="mb-6 flex items-center justify-between">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/5 text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300">
-                        <LayoutGrid className="h-6 w-6" />
+                      <div className="flex h-12 w-12 overflow-hidden items-center justify-center rounded-2xl bg-primary/5 text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+                        {project.imageUrl ? (
+                          <img src={project.imageUrl} alt="" className="h-full w-full object-cover" />
+                        ) : (
+                          <LayoutGrid className="h-6 w-6" />
+                        )}
                       </div>
                     </div>
                     <div className="mt-auto">
@@ -236,10 +270,13 @@ const Dashboard: React.FC<DashboardProps> = ({
                       <h3 className="mt-3 text-xl font-bold text-foreground leading-tight transition-colors group-hover:text-primary">
                         {project.projectName}
                       </h3>
-                      <div className="mt-4 flex items-center gap-2 text-[11px] font-medium text-card-foreground/30">
-                        <span>{project.schedules.length}개의 일정</span>
-                        <span className="h-1 w-1 rounded-full bg-border" />
-                        <span>영업일 기준</span>
+                      <div className="mt-4 flex items-center justify-between text-[11px] font-medium text-card-foreground/30">
+                        <div className="flex items-center gap-2">
+                          <span>{project.schedules.length}개의 일정</span>
+                          <span className="h-1 w-1 rounded-full bg-border" />
+                          <span>영업일 기준</span>
+                        </div>
+                        <ChevronRight className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 group-hover:text-primary group-hover:translate-x-1 transition-all duration-300" />
                       </div>
                     </div>
                   </div>
@@ -337,34 +374,73 @@ const Dashboard: React.FC<DashboardProps> = ({
         onClose={handleCloseModal}
         title={editingProject ? "프로젝트 정보 수정" : "새 프로젝트 등록"}
       >
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="flex flex-col items-center gap-4 py-2">
+            <div className="relative group">
+              <div className="h-[60px] w-[60px] overflow-hidden rounded-2xl bg-muted flex items-center justify-center border-2 border-dashed border-border group-hover:border-primary/50 transition-colors">
+                {newProject.imageUrl ? (
+                  <img src={newProject.imageUrl} alt="Preview" className="h-full w-full object-cover" />
+                ) : (
+                  <Upload className="h-5 w-5 text-foreground/20" />
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 rounded-2xl transition-opacity text-white text-[8px] font-bold leading-tight px-1 text-center"
+              >
+                {newProject.imageUrl ? '이미지 변경' : '이미지 업로드'}
+              </button>
+              {newProject.imageUrl && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setNewProject({ ...newProject, imageUrl: '' });
+                  }}
+                  className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-red-500 text-white flex items-center justify-center shadow-lg border-2 border-white hover:bg-red-600 transition-colors"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              )}
+            </div>
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+            <p className="text-[11px] text-foreground/40 font-medium">60px X 60px 권장</p>
+          </div>
+
           <div>
-            <label className="block text-sm font-bold text-foreground/70 mb-1.5 ml-1">클라이언트 명</label>
+            <label className="block text-[11px] uppercase tracking-wider font-extrabold text-foreground/40 mb-2 ml-1">클라이언트 명</label>
             <input
               autoFocus
               required
               type="text"
-              placeholder="예: Google, Apple"
+              placeholder="예: Google"
               value={newProject.clientName}
               onChange={(e) => setNewProject({ ...newProject, clientName: e.target.value })}
-              className="w-full rounded-xl border border-border bg-muted/50 px-4 py-3.5 text-sm transition-focus focus:border-primary focus:bg-white focus:outline-none focus:ring-4 focus:ring-primary/10"
+              className="w-full rounded-2xl border border-border bg-muted px-5 py-4 text-sm font-bold text-foreground transition-focus focus:border-primary focus:bg-muted focus:outline-none focus:ring-4 focus:ring-primary/10 placeholder:text-foreground/20"
             />
           </div>
           <div>
-            <label className="block text-sm font-bold text-foreground/70 mb-1.5 ml-1">프로젝트 명</label>
+            <label className="block text-[11px] uppercase tracking-wider font-extrabold text-foreground/40 mb-2 ml-1">프로젝트 명</label>
             <input
               required
               type="text"
               placeholder="예: 브랜드 리뉴얼"
               value={newProject.projectName}
               onChange={(e) => setNewProject({ ...newProject, projectName: e.target.value })}
-              className="w-full rounded-xl border border-border bg-muted/50 px-4 py-3.5 text-sm transition-focus focus:border-primary focus:bg-white focus:outline-none focus:ring-4 focus:ring-primary/10"
+              className="w-full rounded-2xl border border-border bg-muted px-5 py-4 text-sm font-bold text-foreground transition-focus focus:border-primary focus:bg-muted focus:outline-none focus:ring-4 focus:ring-primary/10 placeholder:text-foreground/20"
             />
           </div>
           <div className="pt-2">
             <button
               type="submit"
-              className="w-full rounded-xl bg-primary py-4 text-sm font-bold text-white shadow-[0_10px_20px_-5px_rgba(0,87,255,0.3)] transition-all hover:bg-primary-dark active:scale-[0.98]"
+              className="w-full rounded-2xl bg-primary py-4.5 text-sm font-bold text-white shadow-xl shadow-primary/20 transition-all hover:bg-primary-dark active:scale-[0.98]"
             >
               {editingProject ? "정보 수정하기" : "프로젝트 생성"}
             </button>
