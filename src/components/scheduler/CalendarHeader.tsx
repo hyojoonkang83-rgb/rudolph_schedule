@@ -17,7 +17,7 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({ currentDate, setCurrent
           {format(currentDate, 'MMMM', { locale: ko })}
         </h2>
       </div>
-      <div className="flex items-center gap-2 rounded-2xl bg-white border border-border p-1.5 shadow-sm">
+      <div className="flex items-center gap-2 rounded-2xl bg-card border border-border p-1.5 shadow-sm">
         <button
           onClick={() => setCurrentDate(subMonths(currentDate, 1))}
           aria-label="이전 달로 이동"

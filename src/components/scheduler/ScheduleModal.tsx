@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Check, Calendar as CalendarIcon, Clock, Globe, Briefcase, Users, AlertTriangle, Trash2, ArrowRight } from 'lucide-react';
+import { Plus, Calendar as CalendarIcon, Briefcase, Users, AlertTriangle, Trash2 } from 'lucide-react';
 import Modal from '../Modal';
-import { PRESET_COLORS, TIMEZONES } from './constants';
+import { PRESET_COLORS } from './constants';
 import { Schedule } from '../../types/project';
 
 interface ScheduleModalProps {
@@ -182,7 +182,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
             <button
               key={type.id}
               type="button"
-              onClick={() => setForm({ ...form, type: type.id as any })}
+              onClick={() => setForm({ ...form, type: type.id as Schedule['type'] })}
               className={`flex flex-col items-center gap-2 rounded-2xl border p-3 transition-all ${form.type === type.id ? 'border-primary bg-primary/5 text-primary' : 'bg-white dark:bg-zinc-900 text-foreground'}`}
             >
               {type.icon}

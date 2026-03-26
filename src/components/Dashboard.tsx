@@ -1,30 +1,99 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Plus, ChevronRight, LayoutGrid, Trash2, FolderOpen, Sun, Moon } from 'lucide-react';
+import { Plus, LayoutGrid, Trash2, FolderOpen, Sun, Moon, MoreHorizontal, Edit2, Share2 } from 'lucide-react';
 import Modal from './Modal';
 import ConfirmModal from './ConfirmModal';
 import { Project } from '../types/project';
+import { DashboardConfig } from '../utils/storage';
 
 interface DashboardProps {
   projects: Project[];
-  onAddProject: (project: { clientName: string; projectName: string }) => void;
+  onSaveProject: (project: Partial<Project> & { id?: string }) => void;
   onSelectProject: (project: Project) => void;
   onDeleteProject: (id: string) => void;
   theme: 'light' | 'dark';
   onToggleTheme: () => void;
+  dashboardConfig: DashboardConfig;
+  onUpdateDashboardConfig: (config: DashboardConfig) => void;
 }
+
+const EditableText: React.FC<{
+  value: string;
+  onSave: (newValue: string) => void;
+  className?: string;
+  isTextArea?: boolean;
+}> = ({ value, onSave, className, isTextArea }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [tempValue, setTempValue] = useState(value);
+
+  useEffect(() => {
+    if (!isEditing) {
+      setTempValue(value);
+    }
+  }, [value, isEditing]);
+
+  const handleBlur = () => {
+    setIsEditing(false);
+    if (tempValue.trim() !== value) {
+      onSave(tempValue.trim());
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !isTextArea) {
+      handleBlur();
+    }
+    if (e.key === 'Escape') {
+      setTempValue(value);
+      setIsEditing(false);
+    }
+  };
+
+  if (isEditing) {
+    const commonProps = {
+      autoFocus: true,
+      value: tempValue,
+      onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setTempValue(e.target.value),
+      onBlur: handleBlur,
+      onKeyDown: handleKeyDown,
+      className: `w-full bg-transparent outline-none border-b-2 border-primary/30 focus:border-primary transition-all p-0 ${className}`
+    };
+
+    return isTextArea ? <textarea {...commonProps} rows={2} /> : <input type="text" {...commonProps} />;
+  }
+
+  return (
+    <div
+      onClick={() => setIsEditing(true)}
+      className={`cursor-pointer hover:bg-primary/5 rounded-md px-1 -mx-1 transition-colors ${className}`}
+    >
+      {value}
+    </div>
+  );
+};
 
 const Dashboard: React.FC<DashboardProps> = ({ 
   projects, 
-  onAddProject, 
+  onSaveProject, 
   onSelectProject, 
   onDeleteProject,
   theme,
-  onToggleTheme
+  onToggleTheme,
+  dashboardConfig,
+  onUpdateDashboardConfig
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<Project | null>(null);
+  const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [newProject, setNewProject] = useState({ clientName: '', projectName: '' });
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => setActiveMenuId(null);
+    window.addEventListener('click', handleClickOutside);
+    return () => window.removeEventListener('click', handleClickOutside);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,17 +101,41 @@ const Dashboard: React.FC<DashboardProps> = ({
     const projectName = newProject.projectName.trim();
     
     if (clientName && projectName) {
-      onAddProject({ clientName, projectName });
-      setNewProject({ clientName: '', projectName: '' });
-      setIsModalOpen(false);
+      if (editingProject) {
+        onSaveProject({ ...editingProject, clientName, projectName }); 
+      } else {
+        onSaveProject({ clientName, projectName });
+      }
+      handleCloseModal();
     }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingProject(null);
+    setNewProject({ clientName: '', projectName: '' });
+  };
+
+  const handleEditClick = (project: Project) => {
+    setEditingProject(project);
+    setNewProject({ clientName: project.clientName, projectName: project.projectName });
+    setIsModalOpen(true);
+    setActiveMenuId(null);
+  };
+
+  const handleShareClick = (project: Project) => {
+    const url = window.location.origin; // For now, share the main URL
+    navigator.clipboard.writeText(`${url}?project=${project.id}`).then(() => {
+      alert('프로젝트 공유 링크가 클립보드에 복사되었습니다.');
+    });
+    setActiveMenuId(null);
   };
 
   return (
     <div className="min-h-screen bg-background px-6 py-12 lg:px-24">
       <div className="mx-auto max-w-5xl relative">
         <header className="mb-12 flex items-center justify-between">
-          <div>
+          <div className="flex-1 mr-8">
             <div className="mb-2 flex items-center gap-2">
               <span className="inline-flex items-center rounded-md bg-primary/10 px-2 py-1 text-xs font-bold text-primary ring-1 ring-inset ring-primary/20">
                 v0.5.0-Stable
@@ -50,8 +143,17 @@ const Dashboard: React.FC<DashboardProps> = ({
               <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
               <span className="text-[10px] font-medium text-foreground/40 uppercase tracking-tighter">System Online</span>
             </div>
-            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">프로젝트 대시보드</h1>
-            <p className="mt-2 text-foreground/60 text-sm sm:text-base">에이전시의 모든 디자인 프로젝트를 한눈에 관리하세요.</p>
+            <EditableText 
+              value={dashboardConfig.title}
+              onSave={(val) => onUpdateDashboardConfig({ ...dashboardConfig, title: val })}
+              className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl"
+            />
+            <EditableText 
+              value={dashboardConfig.description}
+              onSave={(val) => onUpdateDashboardConfig({ ...dashboardConfig, description: val })}
+              className="mt-2 text-foreground/60 text-sm sm:text-base"
+              isTextArea
+            />
           </div>
           <div className="flex items-center gap-4">
             <button
@@ -126,10 +228,6 @@ const Dashboard: React.FC<DashboardProps> = ({
                       <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/5 text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300">
                         <LayoutGrid className="h-6 w-6" />
                       </div>
-                      <div className="flex -space-x-2 overflow-hidden opacity-40 group-hover:opacity-100 transition-opacity">
-                        <div className="inline-block h-6 w-6 rounded-full ring-2 ring-white bg-muted" />
-                        <div className="inline-block h-6 w-6 rounded-full ring-2 ring-white bg-muted" />
-                      </div>
                     </div>
                     <div className="mt-auto">
                       <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary bg-primary/5 px-2.5 py-1 rounded-md">
@@ -146,16 +244,58 @@ const Dashboard: React.FC<DashboardProps> = ({
                     </div>
                   </div>
                   
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setConfirmDelete(project);
-                    }}
-                    aria-label={`${project.projectName} 프로젝트 삭제`}
-                    className="absolute top-6 right-6 rounded-full p-2 text-foreground/5 transition-all hover:bg-red-50 hover:text-red-500 opacity-0 group-hover:opacity-100"
-                  >
-                    <Trash2 className="h-4 w-4" aria-hidden="true" />
-                  </button>
+                  <div className="absolute top-6 right-6">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setActiveMenuId(activeMenuId === project.id ? null : project.id);
+                      }}
+                      aria-label="더 보기"
+                      className="rounded-full p-2 text-foreground/20 transition-all hover:bg-muted group-hover:text-foreground/60"
+                    >
+                      <MoreHorizontal className="h-5 w-5" />
+                    </button>
+
+                    <AnimatePresence>
+                      {activeMenuId === project.id && (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                          animate={{ opacity: 1, scale: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                          className="absolute right-0 mt-2 w-36 overflow-hidden rounded-2xl border border-border bg-card shadow-xl z-20"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <div className="p-1.5 flex flex-col">
+                            <button
+                              onClick={() => handleEditClick(project)}
+                              className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold text-foreground/70 hover:bg-primary/5 hover:text-primary transition-all overflow-hidden whitespace-nowrap"
+                            >
+                              <Edit2 className="h-3.5 w-3.5" />
+                              수정하기
+                            </button>
+                            <button
+                              onClick={() => handleShareClick(project)}
+                              className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold text-foreground/70 hover:bg-primary/5 hover:text-primary transition-all overflow-hidden whitespace-nowrap"
+                            >
+                              <Share2 className="h-3.5 w-3.5" />
+                              공유하기
+                            </button>
+                            <div className="my-1 h-px bg-border/50" />
+                            <button
+                              onClick={() => {
+                                setConfirmDelete(project);
+                                setActiveMenuId(null);
+                              }}
+                              className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50 transition-all overflow-hidden whitespace-nowrap"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                              삭제하기
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 </motion.div>
               ))}
             </AnimatePresence>
@@ -194,8 +334,8 @@ const Dashboard: React.FC<DashboardProps> = ({
 
       <Modal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="새 프로젝트 등록"
+        onClose={handleCloseModal}
+        title={editingProject ? "프로젝트 정보 수정" : "새 프로젝트 등록"}
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -226,7 +366,7 @@ const Dashboard: React.FC<DashboardProps> = ({
               type="submit"
               className="w-full rounded-xl bg-primary py-4 text-sm font-bold text-white shadow-[0_10px_20px_-5px_rgba(0,87,255,0.3)] transition-all hover:bg-primary-dark active:scale-[0.98]"
             >
-              프로젝트 생성
+              {editingProject ? "정보 수정하기" : "프로젝트 생성"}
             </button>
           </div>
         </form>

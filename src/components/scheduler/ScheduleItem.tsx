@@ -1,8 +1,7 @@
 import React from 'react';
 import { Schedule } from '../../types/project';
 import { PRESET_COLORS } from './constants';
-import { format, isSameDay, startOfDay, parseISO } from 'date-fns';
-import { ko } from 'date-fns/locale';
+import { isSameDay, startOfDay, parseISO } from 'date-fns';
 
 interface ScheduleItemProps {
   schedule: Schedule;
@@ -18,8 +17,8 @@ const ScheduleItem: React.FC<ScheduleItemProps> = ({ schedule, day, onClick }) =
   const isMultiDay = !isSameDay(start, end);
   const isBar = isMultiDay || schedule.isAllDay;
   
-  const isStart = isSameDay(current, start) || format(day, 'E', { locale: ko }) === '일';
-  const isEnd = isSameDay(current, end) || format(day, 'E', { locale: ko }) === '토';
+  const isStart = isSameDay(current, start) || day.getDay() === 0; // Sunday wraps
+  const isEnd = isSameDay(current, end) || day.getDay() === 6; // Saturday wraps
 
   const colorData = PRESET_COLORS.find((c: { id: string }) => c.id === schedule.color) || PRESET_COLORS[0]!;
   

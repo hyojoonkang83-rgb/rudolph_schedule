@@ -30,7 +30,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
     }).map((s: Schedule) => ({
       ...s,
       lane: scheduleToLaneMap.get(s.id)
-    })).sort((a: any, b: any) => (a.lane || 0) - (b.lane || 0));
+    })).sort((a, b) => (a.lane ?? 0) - (b.lane ?? 0));
   };
 
   return (

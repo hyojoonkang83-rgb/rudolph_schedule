@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { getProjects, saveProject, deleteProject } from './utils/storage';
+import { getProjects, saveProject, deleteProject, getDashboardConfig, saveDashboardConfig, DashboardConfig } from './utils/storage';
 import Dashboard from './components/Dashboard';
 import ProjectScheduler from './components/scheduler/ProjectScheduler';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -8,6 +8,7 @@ import { Project } from './types/project';
 
 const App: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>(() => getProjects());
+  const [dashboardConfig, setDashboardConfig] = useState<DashboardConfig>(() => getDashboardConfig());
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     if (typeof window !== 'undefined') {
@@ -32,8 +33,8 @@ const App: React.FC = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
   }, []);
 
-  const handleAddProject = React.useCallback((newProject: { clientName: string; projectName: string }) => {
-    const updatedProjects = saveProject(newProject);
+  const handleSaveProject = React.useCallback((projectData: Partial<Project> & { id?: string }) => {
+    const updatedProjects = saveProject(projectData);
     setProjects(updatedProjects);
   }, []);
 
@@ -47,6 +48,11 @@ const App: React.FC = () => {
     const updatedProjects = deleteProject(id);
     setProjects(updatedProjects);
     setSelectedProject(prev => prev?.id === id ? null : prev);
+  }, []);
+
+  const handleUpdateDashboardConfig = React.useCallback((newConfig: DashboardConfig) => {
+    saveDashboardConfig(newConfig);
+    setDashboardConfig(newConfig);
   }, []);
 
   return (
@@ -63,11 +69,13 @@ const App: React.FC = () => {
           >
             <Dashboard 
               projects={projects} 
-              onAddProject={handleAddProject} 
+              onSaveProject={handleSaveProject} 
               onSelectProject={setSelectedProject} 
               onDeleteProject={handleDeleteProject}
               theme={theme}
               onToggleTheme={toggleTheme}
+              dashboardConfig={dashboardConfig}
+              onUpdateDashboardConfig={handleUpdateDashboardConfig}
             />
           </motion.div>
         ) : (

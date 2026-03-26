@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Link as LinkIcon, Check, Plus } from 'lucide-react';
+import { ArrowLeft, Link as LinkIcon, Check } from 'lucide-react';
 import { format } from 'date-fns';
-import { ko } from 'date-fns/locale';
 
 import { Project, Schedule } from '../../types/project';
 import { useCalendar } from './useCalendar';
@@ -21,8 +20,6 @@ const ProjectScheduler: React.FC<ProjectSchedulerProps> = ({ project, onBack, on
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [editingScheduleId, setEditingScheduleId] = useState<string | null>(null);
-  const [selectedDayForDetail, setSelectedDayForDetail] = useState<Date | null>(null);
-
   const [initialSchedule, setInitialSchedule] = useState<Partial<Schedule>>({});
 
   const { days, monthStart, scheduleToLaneMap } = useCalendar(currentDate, project);
@@ -125,7 +122,7 @@ const ProjectScheduler: React.FC<ProjectSchedulerProps> = ({ project, onBack, on
           scheduleToLaneMap={scheduleToLaneMap}
           onDayClick={handleDayClick}
           onScheduleClick={handleScheduleClick}
-          onMoreClick={(e: React.MouseEvent, day: Date) => { e.stopPropagation(); setSelectedDayForDetail(day); }}
+          onMoreClick={(e: React.MouseEvent) => { e.stopPropagation(); }}
         />
       </main>
 
