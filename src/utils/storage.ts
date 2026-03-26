@@ -23,41 +23,37 @@ const SAMPLE_PROJECTS: Project[] = [
 ];
 
 export const getProjects = (): Project[] => {
-  let data = localStorage.getItem(PROJECTS_KEY);
-  
-  // Migration logic
-  if (!data) {
-    const oldData = localStorage.getItem(OLD_PROJECTS_KEY);
-    if (oldData) {
-      console.info('Migrating data from old storage key...');
-      localStorage.setItem(PROJECTS_KEY, oldData);
-      localStorage.removeItem(OLD_PROJECTS_KEY);
-      data = oldData;
-    }
-  }
-
-  if (!data) {
-    localStorage.setItem(PROJECTS_KEY, JSON.stringify(SAMPLE_PROJECTS));
-    return SAMPLE_PROJECTS;
-  }
-  
   try {
+    const data = localStorage.getItem(PROJECTS_KEY);
+    
+    // Migration logic
+    if (!data) {
+      const oldData = localStorage.getItem(OLD_PROJECTS_KEY);
+      if (oldData) {
+        localStorage.setItem(PROJECTS_KEY, oldData);
+        localStorage.removeItem(OLD_PROJECTS_KEY);
+        return JSON.parse(oldData);
+      }
+      
+      // Initialize with samples if no data exists at all
+      localStorage.setItem(PROJECTS_KEY, JSON.stringify(SAMPLE_PROJECTS));
+      return SAMPLE_PROJECTS;
+    }
+
     const projects = JSON.parse(data);
     if (!Array.isArray(projects)) {
-      console.warn('Storage data is not an array, resetting to sample.');
       return SAMPLE_PROJECTS;
     }
     
     const validatedProjects = projects.filter(p => p && typeof p === 'object' && p.id && p.projectName);
     
     if (validatedProjects.length !== projects.length) {
-      console.warn('Filtered out invalid projects from storage.');
       localStorage.setItem(PROJECTS_KEY, JSON.stringify(validatedProjects));
     }
     
     return validatedProjects;
   } catch (error) {
-    console.error('Failed to parse storage data:', error);
+    // Robust error recovery: return samples but don't overwrite user data unless completely corrupted
     return SAMPLE_PROJECTS;
   }
 };
@@ -72,16 +68,20 @@ export const saveProject = (projectData: Partial<Project> & { id?: string }): Pr
     );
   } else {
     const newProject: Project = {
-      id: `proj_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-      clientName: projectData.clientName || 'Unnamed Client',
-      projectName: projectData.projectName || 'Untitled Project',
+      id: `proj_${crypto.randomUUID().split('-')[0]}_${Date.now().toString(36).slice(-4)}`,
+      clientName: (projectData.clientName || 'Unnamed Client').trim(),
+      projectName: (projectData.projectName || 'Untitled Project').trim(),
       schedules: [],
       ...projectData
     } as Project;
     updatedProjects = [...projects, newProject];
   }
 
-  localStorage.setItem(PROJECTS_KEY, JSON.stringify(updatedProjects));
+  try {
+    localStorage.setItem(PROJECTS_KEY, JSON.stringify(updatedProjects));
+  } catch (e) {
+    console.error('Failed to save to localStorage:', e);
+  }
   return updatedProjects;
 };
 

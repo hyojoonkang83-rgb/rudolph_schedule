@@ -24,8 +24,11 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newProject.clientName && newProject.projectName) {
-      onAddProject(newProject);
+    const clientName = newProject.clientName.trim();
+    const projectName = newProject.projectName.trim();
+    
+    if (clientName && projectName) {
+      onAddProject({ clientName, projectName });
       setNewProject({ clientName: '', projectName: '' });
       setIsModalOpen(false);
     }
@@ -37,8 +40,8 @@ const Dashboard: React.FC<DashboardProps> = ({
         <header className="mb-12 flex items-center justify-between">
           <div>
             <div className="mb-2 flex items-center gap-2">
-              <span className="inline-flex items-center rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary ring-1 ring-inset ring-primary/20">
-                Stable V5
+              <span className="inline-flex items-center rounded-md bg-primary/10 px-2 py-1 text-xs font-bold text-primary ring-1 ring-inset ring-primary/20">
+                v0.5.0-Stable
               </span>
               <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
               <span className="text-[10px] font-medium text-foreground/40 uppercase tracking-tighter">System Online</span>
