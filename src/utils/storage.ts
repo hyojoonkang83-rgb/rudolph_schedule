@@ -69,6 +69,9 @@ export const getProjects = (): Project[] => {
   }
 };
 
+export const generateId = (prefix: string) => 
+  `${prefix}_${crypto.randomUUID().split('-')[0]}_${Date.now().toString(36).slice(-4)}`;
+
 export const saveProject = (projectData: Partial<Project> & { id?: string }): Project[] => {
   const projects = getProjects();
   let updatedProjects: Project[];
@@ -78,14 +81,13 @@ export const saveProject = (projectData: Partial<Project> & { id?: string }): Pr
       p.id === projectData.id ? { ...p, ...projectData } as Project : p
     );
   } else {
-    const newProject: Project = {
-      ...projectData,
-      id: `proj_${crypto.randomUUID().split('-')[0]}_${Date.now().toString(36).slice(-4)}`,
+    updatedProjects = [...projects, {
+      id: generateId('proj'),
       clientName: (projectData.clientName || 'Unnamed Client').trim(),
       projectName: (projectData.projectName || 'Untitled Project').trim(),
       schedules: projectData.schedules ?? [],
-    };
-    updatedProjects = [...projects, newProject];
+      imageUrl: projectData.imageUrl
+    } as Project];
   }
 
   try {

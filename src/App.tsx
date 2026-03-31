@@ -31,17 +31,18 @@ const App: React.FC = () => {
 
   // Sync state with URL for browser navigation support
   React.useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const projectId = searchParams.get('project');
-    if (projectId) {
-      const project = projects.find(p => p.id === projectId);
-      if (project && (!selectedProject || selectedProject.id !== projectId)) {
-        setSelectedProject(project);
+    const handleInitialUrl = () => {
+      const searchParams = new URLSearchParams(window.location.search);
+      const projectId = searchParams.get('project');
+      if (projectId) {
+        const project = projects.find(p => p.id === projectId);
+        if (project) {
+          setSelectedProject(project);
+        }
       }
-    } else if (selectedProject) {
-      setSelectedProject(null);
-    }
-  }, []);
+    };
+    handleInitialUrl();
+  }, [projects]);
 
   const handleSelectProject = React.useCallback((project: Project | null) => {
     setSelectedProject(project);

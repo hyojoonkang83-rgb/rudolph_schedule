@@ -40,6 +40,11 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
       return;
     }
 
+    if (!form.startTime && !form.isAllDay) {
+      setError('시간을 설정하거나 종일 일정을 선택해주세요.');
+      return;
+    }
+
     onSubmit({
       ...form,
       category: modalTab,

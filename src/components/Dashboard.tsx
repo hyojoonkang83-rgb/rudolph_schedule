@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Plus, LayoutGrid, Trash2, FolderOpen, Sun, Moon, MoreHorizontal, Edit2, Share2, Upload, X, ChevronRight } from 'lucide-react';
+import { Plus, LayoutGrid, Trash2, FolderOpen, Sun, Moon, MoreHorizontal, Edit2, Share2, Upload, X, ChevronRight, Check } from 'lucide-react';
 import Modal from './Modal';
 import ConfirmModal from './ConfirmModal';
 import { Project } from '../types/project';
@@ -153,10 +153,15 @@ const Dashboard: React.FC<DashboardProps> = ({
     }
   };
 
+  const [showShareToast, setShowShareToast] = useState<string | null>(null);
+
   const handleShareClick = (project: Project) => {
-    const url = window.location.origin; // For now, share the main URL
-    navigator.clipboard.writeText(`${url}?project=${project.id}`).then(() => {
-      alert('프로젝트 공유 링크가 클립보드에 복사되었습니다.');
+    const baseUrl = window.location.href.split('?')[0];
+    const shareUrl = `${baseUrl}?project=${project.id}`;
+    
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      setShowShareToast(project.id);
+      setTimeout(() => setShowShareToast(null), 3000);
     });
     setActiveMenuId(null);
   };
@@ -168,7 +173,7 @@ const Dashboard: React.FC<DashboardProps> = ({
           <div className="flex-1 mr-8">
             <div className="mb-2 flex items-center gap-2">
               <span className="inline-flex items-center rounded-md bg-primary/10 px-2 py-1 text-xs font-bold text-primary ring-1 ring-inset ring-primary/20">
-                v0.5.0-Stable
+                v0.6-Stable
               </span>
               <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
               <span className="text-[10px] font-medium text-foreground/40 uppercase tracking-tighter">System Online</span>
@@ -314,8 +319,8 @@ const Dashboard: React.FC<DashboardProps> = ({
                               onClick={() => handleShareClick(project)}
                               className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold text-foreground/70 hover:bg-primary/5 hover:text-primary transition-all overflow-hidden whitespace-nowrap"
                             >
-                              <Share2 className="h-3.5 w-3.5" />
-                              공유하기
+                              {showShareToast === project.id ? <Check className="h-3.5 w-3.5 text-green-500" /> : <Share2 className="h-3.5 w-3.5" />}
+                              {showShareToast === project.id ? '복사됨!' : '공유하기'}
                             </button>
                             <div className="my-1 h-px bg-border/50" />
                             <button

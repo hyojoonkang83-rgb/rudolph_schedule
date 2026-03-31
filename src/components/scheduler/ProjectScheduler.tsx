@@ -4,6 +4,7 @@ import { ArrowLeft, Link as LinkIcon, Check, Sun, Moon } from 'lucide-react';
 import { format } from 'date-fns';
 
 import { Project, Schedule } from '../../types/project';
+import { generateId } from '../../utils/storage';
 import { useCalendar } from './useCalendar';
 import CalendarHeader from './CalendarHeader';
 import CalendarGrid from './CalendarGrid';
@@ -66,7 +67,10 @@ const ProjectScheduler: React.FC<ProjectSchedulerProps> = ({ project, onBack, on
         s.id === editingScheduleId ? { ...s, ...scheduleData } as Schedule : s
       );
     } else {
-      updatedSchedules = [...project.schedules, { ...scheduleData, id: `sch_${Date.now()}` } as Schedule];
+      updatedSchedules = [...project.schedules, { 
+        ...scheduleData, 
+        id: generateId('sch') 
+      } as Schedule];
     }
 
     onUpdateProject({ ...project, schedules: updatedSchedules });
