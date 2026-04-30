@@ -4,3 +4,20 @@ node_modules
 dist
 build
 .gemini
+
+# === v1.0 셋업: 표준 항목 보강 (2026-04-30) ===
+dist/
+build/
+.turbo/
+node_modules/
+.env.local
+.env.*.local
+*.log
+npm-debug.log*
+yarn-debug.log*
+Thumbs.db
+.idea/
+*.swp
+*.swo
+coverage/
+.nyc_output/
