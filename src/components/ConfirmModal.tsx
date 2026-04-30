@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle } from 'lucide-react';
 
@@ -18,9 +18,18 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   onConfirm, 
   title, 
   message, 
-  confirmText = "삭제", 
-  type = "danger" 
+  confirmText = "삭제",
+  type = "danger"
 }) => {
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [isOpen, onClose]);
+
   return (
     <AnimatePresence>
       {isOpen && (
