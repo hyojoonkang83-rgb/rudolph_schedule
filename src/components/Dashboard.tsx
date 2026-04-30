@@ -173,7 +173,7 @@ const Dashboard: React.FC<DashboardProps> = ({
           <div className="flex-1 mr-8">
             <div className="mb-2 flex items-center gap-2">
               <span className="inline-flex items-center rounded-md bg-primary/10 px-2 py-1 text-xs font-bold text-primary ring-1 ring-inset ring-primary/20">
-                v1.0-alpha
+                v0.6-Stable
               </span>
               <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
               <span className="text-[10px] font-medium text-foreground/40 uppercase tracking-tighter">System Online</span>
@@ -328,7 +328,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                                 setConfirmDelete(project);
                                 setActiveMenuId(null);
                               }}
-                              className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50 transition-all overflow-hidden whitespace-nowrap"
+                              className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all overflow-hidden whitespace-nowrap"
                             >
                               <Trash2 className="h-3.5 w-3.5" />
                               삭제하기

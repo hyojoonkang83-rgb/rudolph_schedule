@@ -60,7 +60,7 @@ const WeekView: React.FC<WeekViewProps> = ({
     return {
       top: `${top}px`,
       height: `${Math.max(height, 24)}px`,
-      backgroundColor: `var(--color-${schedule.color || 'primary'})`,
+      backgroundColor: colorData.hex,
     };
   };
 
@@ -95,11 +95,11 @@ const WeekView: React.FC<WeekViewProps> = ({
                   {getAllDaySchedulesForDay(day).map(s => {
                      const colorData = PRESET_COLORS.find(c => c.id === (s.color || 'blue')) || PRESET_COLORS[0]!;
                      return (
-                      <div 
+                      <div
                         key={s.id}
                         onClick={() => onScheduleClick(s)}
                         className={`text-[10px] font-black px-2 py-1 rounded-full truncate cursor-pointer shadow-sm hover:brightness-110 active:scale-95 transition-all text-white`}
-                        style={{ backgroundColor: `var(--color-${s.color || 'primary'})` }}
+                        style={{ backgroundColor: colorData.hex }}
                       >
                         {s.title}
                       </div>
@@ -115,7 +115,7 @@ const WeekView: React.FC<WeekViewProps> = ({
       {/* Main Scrollable Grid */}
       <div 
         ref={scrollContainerRef}
-        className="flex-1 overflow-y-auto custom-scrollbar relative scroll-smooth" 
+        className="flex-1 overflow-y-auto relative scroll-smooth"
         style={{ maxHeight: 'calc(100vh - 300px)' }}
       >
         <div className="flex min-h-full">
@@ -195,21 +195,26 @@ const NowIndicator = () => {
   const mins = now.getHours() * 60 + now.getMinutes();
   const top = (mins / 60) * 60;
 
+  // currentDayIndex: 0=Sunday...6=Saturday (matches grid column order)
+  const colWidth = 100 / 7;
+  const dotLeft = (currentDayIndex * colWidth) + colWidth / 2;
+
   return (
-    <div 
-      className="absolute left-0 right-0 z-40 pointer-events-none flex items-center h-0.5"
+    <div
+      className="absolute left-0 right-0 z-40 pointer-events-none"
       style={{ top: `${top}px` }}
     >
-      <div className="absolute -left-14 w-12 flex justify-end">
-        <span className="text-[10px] font-black text-red-500 bg-background px-1 rounded-sm shadow-sm">{format(now, 'HH:mm')}</span>
+      {/* Time label - positioned to the left of the grid via negative offset */}
+      <div className="absolute -left-16 w-14 flex justify-end items-center h-0.5">
+        <span className="text-[10px] font-black text-red-500 bg-background px-1 rounded-sm shadow-sm leading-none">{format(now, 'HH:mm')}</span>
       </div>
-      <div className="flex-1 relative flex items-center">
-        <div className="h-0.5 w-full bg-red-500/40" />
-        <div 
-          className="absolute h-3 w-3 rounded-full bg-red-500 shadow-lg shadow-red-500/50 -translate-x-1/2"
-          style={{ left: `${((currentDayIndex + 0.5) / 7) * 100}%` }}
-        />
-      </div>
+      {/* Red line across full week */}
+      <div className="h-0.5 w-full bg-red-500/30" />
+      {/* Red dot at current day column */}
+      <div
+        className="absolute top-1/2 h-3 w-3 rounded-full bg-red-500 shadow-lg shadow-red-500/50 -translate-x-1/2 -translate-y-1/2"
+        style={{ left: `${dotLeft}%` }}
+      />
     </div>
   );
 };

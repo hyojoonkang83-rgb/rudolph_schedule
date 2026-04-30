@@ -27,7 +27,7 @@ const ProjectScheduler: React.FC<ProjectSchedulerProps> = ({ project, onBack, on
   const [editingScheduleId, setEditingScheduleId] = useState<string | null>(null);
   const [initialSchedule, setInitialSchedule] = useState<Partial<Schedule>>({});
 
-  const { days, monthStart, scheduleToLaneMap } = useCalendar(currentDate, project, viewMode);
+  const { days, monthStart, scheduleToLaneMap, totalWeeks } = useCalendar(currentDate, project, viewMode);
 
   const handleCopyLink = React.useCallback(() => {
     navigator.clipboard.writeText(window.location.href);
@@ -39,7 +39,7 @@ const ProjectScheduler: React.FC<ProjectSchedulerProps> = ({ project, onBack, on
     setEditingScheduleId(null);
     const dateStr = format(day, 'yyyy-MM-dd');
     const startTime = hour !== undefined ? `${hour.toString().padStart(2, '0')}:00` : '09:00';
-    const endTime = hour !== undefined ? `${(hour + 1).toString().padStart(2, '0')}:00` : '10:00';
+    const endTime = hour !== undefined ? (hour < 23 ? `${(hour + 1).toString().padStart(2, '0')}:00` : '23:59') : '10:00';
     
     setInitialSchedule({
       title: '',
@@ -149,7 +149,7 @@ const ProjectScheduler: React.FC<ProjectSchedulerProps> = ({ project, onBack, on
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl p-6 lg:p-10 relative">
+      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10 pt-4 pb-20 sm:pb-28 relative">
         <CalendarHeader 
           currentDate={currentDate} 
           setCurrentDate={setCurrentDate} 
@@ -162,6 +162,7 @@ const ProjectScheduler: React.FC<ProjectSchedulerProps> = ({ project, onBack, on
             viewMode={viewMode}
             days={days}
             monthStart={monthStart}
+            totalWeeks={totalWeeks}
             project={project}
             scheduleToLaneMap={scheduleToLaneMap}
             onDayClick={handleDayClick}

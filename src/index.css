@@ -35,6 +35,7 @@
     @apply bg-background text-foreground antialiased m-0 p-0;
     font-family: var(--font-sans);
     letter-spacing: -0.01em;
+    scrollbar-gutter: stable;
   }
 
   /* 글로벌 포커스 링 스타일 개선 (접근성) */
