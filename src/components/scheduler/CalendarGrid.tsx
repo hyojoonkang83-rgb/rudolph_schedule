@@ -7,6 +7,7 @@ interface CalendarGridProps {
   viewMode: 'month' | 'week';
   days: Date[];
   monthStart: Date;
+  totalWeeks: number;
   project: Project;
   scheduleToLaneMap: Map<string, number>;
   onDayClick: (day: Date) => void;
@@ -18,6 +19,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
   viewMode,
   days, 
   monthStart, 
+  totalWeeks,
   project, 
   scheduleToLaneMap,
   onDayClick,
@@ -43,11 +45,14 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
   const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
 
   return (
-    <div className="overflow-hidden rounded-[2.5rem] border border-border bg-background shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)]">
-      <div className="calendar-grid border-b border-border/50 bg-muted/10 py-4 text-center">
+    <div className="overflow-x-auto sm:overflow-hidden rounded-xl border border-border bg-background shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)]">
+      <div className="min-w-[700px] sm:min-w-0">
+      <div className="calendar-grid border-b border-border/50 bg-muted/10 py-2.5 text-center">
         {weekDays.map((dayName, i) => (
           <div key={dayName} className="flex flex-col items-center">
-            <span className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/60 leading-none">{dayName}</span>
+            <span className={`text-[11px] font-black uppercase tracking-[0.2em] leading-none ${
+              i === 0 ? 'text-red-500/80' : 'text-foreground/60'
+            }`}>{dayName}</span>
             {viewMode === 'week' && days[i] && (
               <span className={`mt-1 h-8 w-8 flex items-center justify-center rounded-full text-base font-bold transition-colors ${
                 isSameDay(days[i]!, new Date()) ? 'bg-primary text-white' : 'text-foreground/60'
@@ -59,7 +64,13 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
         ))}
       </div>
 
-      <div className="calendar-grid border-l border-t border-border/30">
+      <div 
+        className="calendar-grid border-l border-t border-border/30"
+        style={{ 
+          gridTemplateRows: `repeat(${totalWeeks}, 1fr)`,
+          height: viewMode === 'month' ? 'clamp(500px, 70vh, 650px)' : 'auto'
+        }}
+      >
         {days.map((day) => (
           <DayCell
             key={day.toString()}
@@ -72,6 +83,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
             onMoreClick={onMoreClick}
           />
         ))}
+      </div>
       </div>
     </div>
   );

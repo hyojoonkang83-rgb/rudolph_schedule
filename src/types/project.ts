@@ -9,6 +9,7 @@ export interface Schedule {
   color: string;
   type: 'work' | 'meeting' | 'deadline';
   category?: 'event' | 'task';
+  memo?: string;
   startTimezone?: string;
   endTimezone?: string;
   lane?: number;

@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
-import { 
-  startOfMonth, 
-  endOfMonth, 
-  startOfWeek, 
-  endOfWeek, 
-  eachDayOfInterval, 
-  parseISO, 
-  startOfDay, 
-  endOfDay 
+import {
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  eachDayOfInterval,
+  parseISO,
+  startOfDay,
+  endOfDay
 } from 'date-fns';
 import { Project, Schedule } from '../../types/project';
 
@@ -91,5 +91,6 @@ export const useCalendar = (currentDate: Date, project: Project, viewMode: 'mont
     return map;
   }, [project.schedules]);
 
-  return { days, monthStart, scheduleToLaneMap };
+  const totalWeeks = Math.ceil(days.length / 7);
+  return { days, monthStart, scheduleToLaneMap, totalWeeks };
 };

@@ -1,3 +1,4 @@
+import React from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { format, addMonths, subMonths, addWeeks, subWeeks, startOfToday } from 'date-fns';
@@ -29,9 +30,9 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   };
 
   return (
-    <div className="mb-8 flex items-center justify-between">
-      <div className="flex items-center gap-6">
-        <h2 className="text-2xl font-bold tracking-tight text-foreground min-w-[150px]">
+    <div className="mb-4 sm:mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between px-2">
+      <div className="flex items-center justify-between sm:justify-start gap-4 sm:gap-6">
+        <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground min-w-[120px] sm:min-w-[150px]">
           {format(currentDate, 'yyyy년 M월', { locale: ko })}
         </h2>
         
@@ -40,30 +41,31 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
             onClick={handlePrev}
             className="p-1.5 transition-all hover:bg-card rounded-lg text-foreground/60 hover:text-primary active:scale-90"
           >
-            <ChevronLeft className="h-4.5 w-4.5" />
+            <ChevronLeft className="h-4 sm:h-4.5 w-4 sm:w-4.5" />
           </button>
           <button
             onClick={handleToday}
-            className="px-3 py-1 text-[11px] font-black uppercase tracking-wider text-foreground/40 hover:text-primary transition-colors"
+            className="px-2 flex items-center justify-center"
+            aria-label="오늘로 이동"
           >
-            오늘
+            <div className="w-px h-3.5 bg-foreground/20" />
           </button>
           <button
             onClick={handleNext}
             className="p-1.5 transition-all hover:bg-card rounded-lg text-foreground/60 hover:text-primary active:scale-90"
           >
-            <ChevronRight className="h-4.5 w-4.5" />
+            <ChevronRight className="h-4 sm:h-4.5 w-4 sm:w-4.5" />
           </button>
         </div>
       </div>
 
-      <div className="flex bg-muted/40 p-1.5 rounded-2xl border border-border/40 relative">
-        <div className="flex items-center gap-1.5 isolate">
+      <div className="flex self-center sm:self-auto bg-muted/40 p-1 rounded-2xl border border-border/40 relative">
+        <div className="flex items-center gap-1 isolate">
           {(['month', 'week'] as const).map((mode) => (
             <button
               key={mode}
               onClick={() => setViewMode(mode)}
-              className={`relative px-6 py-2 text-[12px] font-black uppercase tracking-[0.15em] transition-colors duration-300 ${
+              className={`relative px-4 sm:px-6 py-2 text-[10px] sm:text-[12px] font-black uppercase tracking-[0.1em] sm:tracking-[0.15em] transition-colors duration-300 ${
                 viewMode === mode 
                   ? 'text-white' 
                   : 'text-foreground/40 hover:text-foreground/60'
