@@ -1,0 +1,10 @@
+backups/
+.env.local
+.env*.local
+node_modules/
+dist/
+*.log
+.DS_Store
+scripts/check-*.mjs
+scripts/backup-and-verify.mjs
+*.test.*
