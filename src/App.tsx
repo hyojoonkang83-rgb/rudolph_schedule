@@ -4,10 +4,20 @@ import { migrateLocalStorageToSupabase } from './utils/migration';
 import Dashboard from './components/Dashboard';
 import ProjectScheduler from './components/scheduler/ProjectScheduler';
 import ErrorBoundary from './components/ErrorBoundary';
+import PasswordGate from './components/PasswordGate';
+import { isAuthenticated } from './utils/auth';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Project } from './types/project';
 
 const App: React.FC = () => {
+  const [authed, setAuthed] = useState<boolean>(false);
+  const [authChecked, setAuthChecked] = useState<boolean>(false);
+
+  React.useEffect(() => {
+    setAuthed(isAuthenticated());
+    setAuthChecked(true);
+  }, []);
+
   const [projects, setProjects] = useState<Project[]>(() => getProjects());
   const [dashboardConfig, setDashboardConfig] = useState<DashboardConfig>(() => getDashboardConfig());
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
@@ -31,6 +41,7 @@ const App: React.FC = () => {
   }, [theme]);
 
   React.useEffect(() => {
+    if (!authed) return;
     migrateLocalStorageToSupabase().then(result => {
       if (result.success && result.migratedProjects > 0) {
         console.log(`[Migration] ${result.migratedProjects}개 프로젝트, ${result.migratedSchedules}개 일정 마이그레이션 완료`);
@@ -38,7 +49,7 @@ const App: React.FC = () => {
         console.warn('[Migration] 실패:', result.reason);
       }
     });
-  }, []);
+  }, [authed]);
 
   // Sync state with URL for browser navigation support
   React.useEffect(() => {
@@ -106,6 +117,15 @@ const App: React.FC = () => {
     saveDashboardConfig(newConfig);
     setDashboardConfig(newConfig);
   }, []);
+
+  if (!authChecked) return null;
+  if (!authed) {
+    return (
+      <ErrorBoundary>
+        <PasswordGate onSuccess={() => setAuthed(true)} />
+      </ErrorBoundary>
+    );
+  }
 
   return (
     <ErrorBoundary>
