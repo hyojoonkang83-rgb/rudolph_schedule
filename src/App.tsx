@@ -168,12 +168,14 @@ const App: React.FC = () => {
             exit={{ opacity: 0, x: -20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 180 }}
           >
-            <ProjectScheduler 
-              project={selectedProject} 
-              onBack={() => handleSelectProject(null)} 
+            <ProjectScheduler
+              project={selectedProject}
+              onBack={() => handleSelectProject(null)}
               onUpdateProject={handleUpdateProject}
               theme={theme}
               onToggleTheme={toggleTheme}
+              onMemoToggle={() => setMemoOpen((v) => !v)}
+              onLogout={handleLogout}
             />
           </motion.div>
         )}

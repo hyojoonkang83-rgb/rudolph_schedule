@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Link as LinkIcon, Check, Sun, Moon, Download } from 'lucide-react';
+import { ArrowLeft, Link as LinkIcon, Check, Sun, Moon, Download, StickyNote, LogOut } from 'lucide-react';
 import { format } from 'date-fns';
 import html2canvas from 'html2canvas-pro';
 import jsPDF from 'jspdf';
@@ -19,9 +19,11 @@ interface ProjectSchedulerProps {
   onUpdateProject: (project: Project) => void;
   theme: 'light' | 'dark';
   onToggleTheme: () => void;
+  onMemoToggle: () => void;
+  onLogout: () => void;
 }
 
-const ProjectScheduler: React.FC<ProjectSchedulerProps> = ({ project, onBack, onUpdateProject, theme, onToggleTheme }) => {
+const ProjectScheduler: React.FC<ProjectSchedulerProps> = ({ project, onBack, onUpdateProject, theme, onToggleTheme, onMemoToggle, onLogout }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [viewMode, setViewMode] = useState<'month' | 'week'>('month');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -173,6 +175,24 @@ const ProjectScheduler: React.FC<ProjectSchedulerProps> = ({ project, onBack, on
                 {theme === 'light' ? <Moon className="h-4.5 w-4.5" /> : <Sun className="h-4.5 w-4.5" />}
               </motion.div>
             </AnimatePresence>
+          </button>
+
+          <button
+            onClick={onMemoToggle}
+            aria-label="메모 사이드바 열기"
+            title="메모"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-card shadow-sm transition-all hover:bg-muted active:scale-95"
+          >
+            <StickyNote className="h-4.5 w-4.5 text-foreground/60" />
+          </button>
+
+          <button
+            onClick={onLogout}
+            aria-label="로그아웃"
+            title="로그아웃"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-card shadow-sm transition-all hover:bg-muted active:scale-95"
+          >
+            <LogOut className="h-4.5 w-4.5 text-foreground/60" />
           </button>
 
           <button
