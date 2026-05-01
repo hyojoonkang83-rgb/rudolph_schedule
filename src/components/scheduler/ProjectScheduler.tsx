@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Link as LinkIcon, Check, Sun, Moon } from 'lucide-react';
+import { ArrowLeft, Link as LinkIcon, Check, Sun, Moon, Printer } from 'lucide-react';
 import { format } from 'date-fns';
 
 import { Project, Schedule } from '../../types/project';
@@ -123,6 +123,15 @@ const ProjectScheduler: React.FC<ProjectSchedulerProps> = ({ project, onBack, on
                 {theme === 'light' ? <Moon className="h-4.5 w-4.5" /> : <Sun className="h-4.5 w-4.5" />}
               </motion.div>
             </AnimatePresence>
+          </button>
+
+          <button
+            onClick={() => window.print()}
+            aria-label="PDF로 인쇄"
+            title="PDF 인쇄"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-card shadow-sm transition-all hover:bg-muted active:scale-95"
+          >
+            <Printer className="h-4.5 w-4.5 text-foreground/60" />
           </button>
 
           <button
