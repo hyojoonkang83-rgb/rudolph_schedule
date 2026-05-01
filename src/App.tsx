@@ -5,7 +5,7 @@ import Dashboard from './components/Dashboard';
 import ProjectScheduler from './components/scheduler/ProjectScheduler';
 import ErrorBoundary from './components/ErrorBoundary';
 import PasswordGate from './components/PasswordGate';
-import { isAuthenticated } from './utils/auth';
+import { isAuthenticated, logout } from './utils/auth';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Project } from './types/project';
 
@@ -118,6 +118,12 @@ const App: React.FC = () => {
     setDashboardConfig(newConfig);
   }, []);
 
+  const handleLogout = React.useCallback(() => {
+    logout();
+    // setAuthed(false) 대신 reload — 메모리 상태/편집 중 모달 잔여 데이터 완전 제거 (대외비 보호)
+    window.location.reload();
+  }, []);
+
   if (!authChecked) return null;
   if (!authed) {
     return (
@@ -148,6 +154,7 @@ const App: React.FC = () => {
               onToggleTheme={toggleTheme}
               dashboardConfig={dashboardConfig}
               onUpdateDashboardConfig={handleUpdateDashboardConfig}
+              onLogout={handleLogout}
             />
           </motion.div>
         ) : (
