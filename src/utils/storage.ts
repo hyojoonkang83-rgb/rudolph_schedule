@@ -1,4 +1,6 @@
 import { Project } from '../types/project';
+import { isSupabaseEnabled } from '../lib/supabase';
+import { upsertProject, deleteProjectRow } from '../hooks/useSupabase';
 
 const PROJECTS_KEY = 'rudolph_schedule_data';
 const OLD_PROJECTS_KEY = 'design_agency_projects';
@@ -20,14 +22,14 @@ const SAMPLE_PROJECTS: Project[] = [
     clientName: 'Rudolph Agency',
     projectName: '2026 브랜드 비전 수립',
     schedules: [
-      { 
-        id: 'sample-s1', 
-        title: '신규 비전 킥오프', 
+      {
+        id: 'sample-s1',
+        title: '신규 비전 킥오프',
         startDate: new Date().toISOString().split('T')[0] || '',
         endDate: new Date().toISOString().split('T')[0] || '',
         isAllDay: true,
         color: 'blue',
-        type: 'meeting' 
+        type: 'meeting'
       }
     ]
   }
@@ -36,7 +38,7 @@ const SAMPLE_PROJECTS: Project[] = [
 export const getProjects = (): Project[] => {
   try {
     const data = localStorage.getItem(PROJECTS_KEY);
-    
+
     // Migration logic
     if (!data) {
       const oldData = localStorage.getItem(OLD_PROJECTS_KEY);
@@ -45,7 +47,7 @@ export const getProjects = (): Project[] => {
         localStorage.removeItem(OLD_PROJECTS_KEY);
         return JSON.parse(oldData);
       }
-      
+
       // Initialize with samples if no data exists at all
       localStorage.setItem(PROJECTS_KEY, JSON.stringify(SAMPLE_PROJECTS));
       return SAMPLE_PROJECTS;
@@ -55,39 +57,41 @@ export const getProjects = (): Project[] => {
     if (!Array.isArray(projects)) {
       return SAMPLE_PROJECTS;
     }
-    
+
     const validatedProjects = projects.filter(p => p && typeof p === 'object' && p.id && p.projectName);
-    
+
     if (validatedProjects.length !== projects.length) {
       localStorage.setItem(PROJECTS_KEY, JSON.stringify(validatedProjects));
     }
-    
+
     return validatedProjects;
   } catch (error) {
-    // Robust error recovery: return samples but don't overwrite user data unless completely corrupted
     return SAMPLE_PROJECTS;
   }
 };
 
-export const generateId = (prefix: string) => 
+export const generateId = (prefix: string) =>
   `${prefix}_${crypto.randomUUID().split('-')[0]}_${Date.now().toString(36).slice(-4)}`;
 
 export const saveProject = (projectData: Partial<Project> & { id?: string }): Project[] => {
   const projects = getProjects();
   let updatedProjects: Project[];
+  let savedProject: Project;
 
   if (projectData.id) {
-    updatedProjects = projects.map(p => 
-      p.id === projectData.id ? { ...p, ...projectData } as Project : p
+    savedProject = { ...(projects.find(p => p.id === projectData.id) ?? {}), ...projectData } as Project;
+    updatedProjects = projects.map(p =>
+      p.id === projectData.id ? savedProject : p
     );
   } else {
-    updatedProjects = [...projects, {
+    savedProject = {
       id: generateId('proj'),
       clientName: (projectData.clientName || 'Unnamed Client').trim(),
       projectName: (projectData.projectName || 'Untitled Project').trim(),
       schedules: projectData.schedules ?? [],
       imageUrl: projectData.imageUrl
-    } as Project];
+    } as Project;
+    updatedProjects = [...projects, savedProject];
   }
 
   try {
@@ -95,12 +99,27 @@ export const saveProject = (projectData: Partial<Project> & { id?: string }): Pr
   } catch (e) {
     console.error('Failed to save to localStorage:', e);
   }
+
+  // Supabase 동기화 (write-through, fire-and-forget)
+  if (isSupabaseEnabled()) {
+    upsertProject(savedProject).catch(err => {
+      console.warn('[Supabase] upsertProject 실패 — localStorage는 유지됨:', err.message);
+    });
+  }
+
   return updatedProjects;
 };
 
 export const deleteProject = (id: string): Project[] => {
   const projects = getProjects().filter(p => p.id !== id);
   localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
+
+  if (isSupabaseEnabled()) {
+    deleteProjectRow(id).catch(err => {
+      console.warn('[Supabase] deleteProjectRow 실패 — localStorage는 유지됨:', err.message);
+    });
+  }
+
   return projects;
 };
 

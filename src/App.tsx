@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { getProjects, saveProject, deleteProject, getDashboardConfig, saveDashboardConfig, DashboardConfig } from './utils/storage';
+import { migrateLocalStorageToSupabase } from './utils/migration';
 import Dashboard from './components/Dashboard';
 import ProjectScheduler from './components/scheduler/ProjectScheduler';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -28,6 +29,16 @@ const App: React.FC = () => {
     }
     localStorage.setItem('rudolph_theme', theme);
   }, [theme]);
+
+  React.useEffect(() => {
+    migrateLocalStorageToSupabase().then(result => {
+      if (result.success && result.migratedProjects > 0) {
+        console.log(`[Migration] ${result.migratedProjects}개 프로젝트, ${result.migratedSchedules}개 일정 마이그레이션 완료`);
+      } else if (!result.success) {
+        console.warn('[Migration] 실패:', result.reason);
+      }
+    });
+  }, []);
 
   // Sync state with URL for browser navigation support
   React.useEffect(() => {
