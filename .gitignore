@@ -24,3 +24,4 @@ coverage/
 
 # 자동 백업 + 스크린샷 (커밋 제외)
 backups/
+.vercel
