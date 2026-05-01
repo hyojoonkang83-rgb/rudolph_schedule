@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Link as LinkIcon, Check, Sun, Moon, Printer } from 'lucide-react';
+import { ArrowLeft, Link as LinkIcon, Check, Sun, Moon, Download } from 'lucide-react';
 import { format } from 'date-fns';
+import html2canvas from 'html2canvas-pro';
+import jsPDF from 'jspdf';
 
 import { Project, Schedule } from '../../types/project';
 import { generateId } from '../../utils/storage';
@@ -34,6 +36,54 @@ const ProjectScheduler: React.FC<ProjectSchedulerProps> = ({ project, onBack, on
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }, []);
+
+  const handleDownloadPDF = React.useCallback(async () => {
+    const element = document.querySelector('[data-pdf-content]') as HTMLElement | null;
+    if (!element) {
+      console.error('[PDF] 캡처 영역을 찾을 수 없습니다');
+      return;
+    }
+
+    try {
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = pdfWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pdfHeight;
+
+      while (heightLeft > 0) {
+        position -= pdfHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pdfHeight;
+      }
+
+      const dateStr = format(new Date(), 'yyyyMMdd');
+      const safeName = `${project.clientName}_${project.projectName}_${dateStr}`.replace(
+        /[\\/:*?"<>|]/g,
+        '_'
+      );
+      pdf.save(`${safeName}.pdf`);
+    } catch (e) {
+      console.error('[PDF] 생성 실패:', e);
+      alert('PDF 생성 중 오류가 발생했습니다');
+    }
+  }, [project]);
 
   const handleDayClick = React.useCallback((day: Date, hour?: number) => {
     setEditingScheduleId(null);
@@ -126,12 +176,12 @@ const ProjectScheduler: React.FC<ProjectSchedulerProps> = ({ project, onBack, on
           </button>
 
           <button
-            onClick={() => window.print()}
-            aria-label="PDF로 인쇄"
-            title="PDF 인쇄"
+            onClick={handleDownloadPDF}
+            aria-label="PDF 다운로드"
+            title="PDF 다운로드"
             className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-card shadow-sm transition-all hover:bg-muted active:scale-95"
           >
-            <Printer className="h-4.5 w-4.5 text-foreground/60" />
+            <Download className="h-4.5 w-4.5 text-foreground/60" />
           </button>
 
           <button
@@ -158,7 +208,7 @@ const ProjectScheduler: React.FC<ProjectSchedulerProps> = ({ project, onBack, on
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10 pt-4 pb-20 sm:pb-28 relative">
+      <main data-pdf-content className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10 pt-4 pb-20 sm:pb-28 relative">
         <CalendarHeader 
           currentDate={currentDate} 
           setCurrentDate={setCurrentDate} 
