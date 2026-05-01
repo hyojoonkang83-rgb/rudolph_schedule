@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Plus, LayoutGrid, Trash2, FolderOpen, Sun, Moon, MoreHorizontal, Edit2, Share2, Upload, X, ChevronRight, Check, LogOut } from 'lucide-react';
+import { Plus, LayoutGrid, Trash2, FolderOpen, Sun, Moon, MoreHorizontal, Edit2, Share2, Upload, X, ChevronRight, Check, LogOut, StickyNote } from 'lucide-react';
 import Modal from './Modal';
 import ConfirmModal from './ConfirmModal';
 import { Project } from '../types/project';
@@ -17,6 +17,7 @@ interface DashboardProps {
   dashboardConfig: DashboardConfig;
   onUpdateDashboardConfig: (config: DashboardConfig) => void;
   onLogout: () => void;
+  onMemoToggle: () => void;
 }
 
 const EditableText: React.FC<{
@@ -83,7 +84,8 @@ const Dashboard: React.FC<DashboardProps> = ({
   onToggleTheme,
   dashboardConfig,
   onUpdateDashboardConfig,
-  onLogout
+  onLogout,
+  onMemoToggle
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<Project | null>(null);
@@ -210,6 +212,14 @@ const Dashboard: React.FC<DashboardProps> = ({
                   {theme === 'light' ? <Moon className="h-4.5 w-4.5 text-foreground/70" /> : <Sun className="h-4.5 w-4.5 text-foreground/70" />}
                 </motion.div>
               </AnimatePresence>
+            </button>
+            <button
+              onClick={onMemoToggle}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-card/50 border border-border shadow-sm transition-all hover:bg-card active:scale-95"
+              aria-label="메모 사이드바 열기"
+              title="메모"
+            >
+              <StickyNote className="h-4.5 w-4.5 text-foreground/70" />
             </button>
             <button
               onClick={onLogout}

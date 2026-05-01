@@ -5,6 +5,7 @@ import Dashboard from './components/Dashboard';
 import ProjectScheduler from './components/scheduler/ProjectScheduler';
 import ErrorBoundary from './components/ErrorBoundary';
 import PasswordGate from './components/PasswordGate';
+import MemoSidebar from './components/MemoSidebar';
 import { isAuthenticated, logout } from './utils/auth';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Project } from './types/project';
@@ -12,6 +13,7 @@ import { Project } from './types/project';
 const App: React.FC = () => {
   const [authed, setAuthed] = useState<boolean>(false);
   const [authChecked, setAuthChecked] = useState<boolean>(false);
+  const [memoOpen, setMemoOpen] = useState<boolean>(false);
 
   React.useEffect(() => {
     setAuthed(isAuthenticated());
@@ -155,6 +157,7 @@ const App: React.FC = () => {
               dashboardConfig={dashboardConfig}
               onUpdateDashboardConfig={handleUpdateDashboardConfig}
               onLogout={handleLogout}
+              onMemoToggle={() => setMemoOpen((v) => !v)}
             />
           </motion.div>
         ) : (
@@ -175,6 +178,7 @@ const App: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      <MemoSidebar open={memoOpen} onClose={() => setMemoOpen(false)} />
     </div>
     </ErrorBoundary>
   );
